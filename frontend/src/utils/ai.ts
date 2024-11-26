@@ -1,6 +1,6 @@
 export const getAIMove = (
-    board: string[][],
-    difficulty: "easy" | "medium" | "hard"
+  board: string[][],
+  difficulty: "easy" | "medium" | "hard" | "impossible"
 ): { row: number; col: number } | null => {
     const boardSize = board.length;
     const emptyCells: { row: number; col: number }[] = [];
@@ -14,28 +14,21 @@ export const getAIMove = (
 
     if (emptyCells.length === 0) return null; // No moves available
 
-    // Easy Mode: Pick a random empty cell
     if (difficulty === "easy") {
         return emptyCells[Math.floor(Math.random() * emptyCells.length)];
     }
 
-    // Medium Mode: Mix between random and a winning/blocking move
     if (difficulty === "medium") {
-        if (Math.random() < 0.5) {
-            // 50% chance to pick randomly
-            return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-        } else {
-            // 50% chance to calculate the best move
-            return findBestMove(board, "O") || emptyCells[0];
-        }
+        if (Math.random() < 0.5) return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        return findBestMove(board, "O") || emptyCells[0];
     }
 
-    // Hard Mode: Always calculate the best move
     if (difficulty === "hard") {
         return findBestMove(board, "O") || emptyCells[0];
     }
 
-    return null;
+    // Impossible: Perfect AI
+    return findBestMove(board, "O");
 };
 
 const findBestMove = (

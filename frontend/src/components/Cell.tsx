@@ -20,6 +20,7 @@ const Cell: React.FC<CellProps> = ({ value, onClick }) => {
         fontSize: "24px",
         cursor: "pointer",
         backgroundColor: value ? "#f5f5f5" : "white",
+        borderRadius: "8px",
         color: value === "X" ? "#1976d2" : value === "O" ? "red" : "black",
         "&:hover": {
           backgroundColor: value ? "#f5f5f5" : "#f5f5f5",

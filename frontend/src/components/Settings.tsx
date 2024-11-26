@@ -9,16 +9,18 @@ import {
   TextField,
   Typography,
   Button,
+  useMediaQuery,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
+import { useTheme } from "@mui/system";
 
 interface SettingsProps {
   boardSize: number;
   setBoardSize: (size: number) => void;
   isAI: boolean;
   setIsAI: (isAI: boolean) => void;
-  aiDifficulty: "easy" | "medium" | "hard";
-  setAIDifficulty: (difficulty: "easy" | "medium" | "hard") => void;
+  aiDifficulty: "easy" | "medium" | "hard" | "impossible";
+  setAIDifficulty: (difficulty: "easy" | "medium" | "hard" | "impossible") => void;
   isTimerEnabled: boolean;
   setIsTimerEnabled: (enabled: boolean) => void;
   timerDuration: number;
@@ -37,7 +39,9 @@ const Settings: React.FC<SettingsProps> = ({
                                              timerDuration,
                                              setTimerDuration,
                                            }) => {
-  // Temporary state to hold user input before confirming
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   const [inputTimer, setInputTimer] = useState(timerDuration);
 
   const handleBoardSizeChange = (event: SelectChangeEvent<number>) => {
@@ -47,33 +51,47 @@ const Settings: React.FC<SettingsProps> = ({
     }
   };
 
-  const boardSizeOptions = [
-    { value: 3, label: "Board Size 1: 3 x 3" },
-    { value: 4, label: "Board Size 2: 4 x 4 (Recommended)" },
-    { value: 5, label: "Board Size 3: 5 x 5" },
-    { value: 6, label: "Board Size 4: 6 x 6" },
-    { value: 7, label: "Board Size 5: 7 x 7" },
-    { value: 8, label: "Board Size 6: 8 x 8" },
-  ];
-
   const handleSetTimer = () => {
     if (inputTimer >= 10 && inputTimer <= 300) {
-      setTimerDuration(inputTimer); // Update the timer only on confirmation
+      setTimerDuration(inputTimer);
     }
   };
 
+  const boardSizeOptions = [
+    { value: 3, label: "3 x 3" },
+    { value: 4, label: "4 x 4 (Recommended)" },
+    { value: 5, label: "5 x 5" },
+    { value: 6, label: "6 x 6" },
+    { value: 7, label: "7 x 7" },
+    { value: 8, label: "8 x 8" },
+  ];
+
   return (
-    <Box sx={{ textAlign: "center", mb: 3 }}>
+    <Box
+      sx={{
+        textAlign: "center",
+        mb: 0,
+        p: isSmallScreen ? 2 : 4,
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        alignItems: "center",
+      }}
+    >
       {/* Board Size Settings */}
       <Box
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center", mb: 2 }}
+        sx={{
+          display: "flex",
+          flexDirection: isSmallScreen ? "column" : "row",
+          alignItems: "center",
+          gap: 2,
+          mt: 0
+        }}
       >
-        <FormControl sx={{ minWidth: 200, mr: 2 }}>
+        <FormControl sx={{ minWidth: 200 }}>
           <InputLabel
             id="board-size-label"
-            sx={{
-              fontFamily: "Poppins",
-            }}
+            sx={{ fontFamily: "Poppins" }}
           >
             Board Size
           </InputLabel>
@@ -107,23 +125,23 @@ const Settings: React.FC<SettingsProps> = ({
             ))}
           </Select>
         </FormControl>
-
-        {/* Play Against AI Switch */}
-        <Typography
-          variant="body1"
+        <Box
           sx={{
-            mr: 1,
-            fontFamily: "Poppins",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
           }}
         >
-          Play Against AI
-        </Typography>
-        <Switch checked={isAI} onChange={(e) => setIsAI(e.target.checked)} />
+          <Typography variant="body1" sx={{ fontFamily: "Poppins" }}>
+            Play Against AI
+          </Typography>
+          <Switch checked={isAI} onChange={(e) => setIsAI(e.target.checked)} />
+        </Box>
       </Box>
 
       {/* AI Difficulty Settings */}
       {isAI && (
-        <FormControl sx={{ minWidth: 200, mb: 2 }}>
+        <FormControl sx={{ minWidth: 200 }}>
           <InputLabel
             id="ai-difficulty-label"
             sx={{
@@ -160,16 +178,25 @@ const Settings: React.FC<SettingsProps> = ({
             <MenuItem value="hard" sx={{ fontFamily: "Poppins" }}>
               Hard
             </MenuItem>
+            <MenuItem value="impossible" sx={{ fontFamily: "Poppins" }}>
+              Impossible
+            </MenuItem>
           </Select>
         </FormControl>
       )}
 
       {/* Timer Settings */}
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: isSmallScreen ? "column" : "row",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
         <Typography
           variant="body1"
           sx={{
-            mr: 1,
             fontFamily: "Poppins",
           }}
         >
@@ -179,38 +206,45 @@ const Settings: React.FC<SettingsProps> = ({
           checked={isTimerEnabled}
           onChange={(e) => setIsTimerEnabled(e.target.checked)}
         />
-      </Box>
-      {isTimerEnabled && (
-        <Box
-          sx={{
-            mt: 2,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <TextField
-            label="Timer Duration (seconds)"
-            type="number"
-            value={inputTimer}
-            onChange={(e) => setInputTimer(Number(e.target.value))}
-            inputProps={{ min: 10, max: 300 }}
+        {isTimerEnabled && (
+          <Box
             sx={{
-              fontFamily: "Poppins",
-              width: 200,
+              display: "flex",
+              flexDirection: isSmallScreen ? "column" : "row",
+              gap: 2,
+              alignItems: "center",
             }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSetTimer}
-            sx={{ fontFamily: "Poppins" }}
           >
-            Set Timer
-          </Button>
-        </Box>
-      )}
+            <TextField
+              label="Timer (seconds)"
+              type="number"
+              value={inputTimer}
+              onChange={(e) => setInputTimer(Number(e.target.value))}
+              inputProps={{ min: 10, max: 300, style: {
+                  fontFamily: "Poppins, sans-serif",
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: "Poppins, sans-serif",
+                },
+              }}
+              sx={{
+                fontFamily: "Poppins",
+                width: isSmallScreen ? "100%" : 200,
+              }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSetTimer}
+              sx={{ fontFamily: "Poppins" }}
+            >
+              Set Timer
+            </Button>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

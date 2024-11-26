@@ -7,7 +7,7 @@ import { Box, Typography, Button } from "@mui/material";
 interface BoardProps {
   boardSize: number;
   isAI: boolean;
-  aiDifficulty: "easy" | "medium" | "hard";
+  aiDifficulty: "easy" | "medium" | "hard" | "impossible";
   isTimerEnabled: boolean;
   timerDuration: number; // Duration in seconds
 }
@@ -46,6 +46,7 @@ const Board: React.FC<BoardProps> = ({
 
     if (isAI && currentPlayer === "O") {
       setWinner("AI wins due to timeout!");
+      handleAIMatchResult("loss"); // Player loses due to timeout
     } else {
       setWinner(`${currentPlayer === "X" ? "O" : "X"} wins due to timeout!`);
     }
@@ -61,12 +62,18 @@ const Board: React.FC<BoardProps> = ({
 
     const gameWinner = calculateWinner(updatedBoard);
     if (gameWinner) {
-      setWinner(gameWinner === "X" ? "Player X wins!" : "Player O wins!");
+      const resultMessage = gameWinner === "X" ? "Player X wins!" : "Player O wins!";
+      setWinner(resultMessage);
+
+      if (isAI) {
+        handleAIMatchResult(gameWinner === "X" ? "win" : "loss");
+      }
       return;
     }
 
     if (isBoardFull(updatedBoard)) {
       setIsDraw(true);
+      if (isAI) handleAIMatchResult("draw");
       return;
     }
 
@@ -85,11 +92,13 @@ const Board: React.FC<BoardProps> = ({
           const aiWinner = calculateWinner(aiUpdatedBoard);
           if (aiWinner) {
             setWinner("AI wins!");
+            handleAIMatchResult("loss"); // Player loses to AI
             return;
           }
 
           if (isBoardFull(aiUpdatedBoard)) {
             setIsDraw(true);
+            handleAIMatchResult("draw"); // Draw condition
             return;
           }
 
@@ -97,6 +106,28 @@ const Board: React.FC<BoardProps> = ({
           setTimeLeft(timerDuration);
         }
       }, 300);
+    }
+  };
+
+  const handleAIMatchResult = async (result: "win" | "loss" | "draw") => {
+    const username = localStorage.getItem("TicTacToeUsername");
+    if (!username) return;
+
+    try {
+      const response = await fetch("http://localhost:4000/leaderboard/ai-match", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authentication
+        },
+        body: JSON.stringify({ player: username, result, difficulty: aiDifficulty }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to update leaderboard:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error updating leaderboard:", error);
     }
   };
 
@@ -128,6 +159,9 @@ const Board: React.FC<BoardProps> = ({
         height: "100%",
       }}
     >
+      <Typography variant="h6" sx={{ fontFamily: "Poppins", mb: 2 }}>
+        Game Board
+      </Typography>
       {isTimerEnabled && (
         <>
           <Typography variant="h6" sx={{ mb: 2, fontFamily: "Poppins" }}>
@@ -168,9 +202,21 @@ const Board: React.FC<BoardProps> = ({
           It's a draw!
         </Typography>
       )}
-      <Button variant="contained" color="primary" onClick={resetBoard} sx={{ mt: 2 }}>
+
+      <Typography variant="h6" sx={{ fontFamily: "Poppins", mt: 2 }}>
+        {isAI ? "Player (X)" : "Player 1 (X)"} vs {isAI ? "AI (O)" : "Player 2 (O)"}
+      </Typography>
+
+      <Button variant="contained" color="primary" onClick={resetBoard} sx={{ margin: 2, fontFamily: "Poppins" }}>
         Reset Board
       </Button>
+
+      {/* Divider */}
+      <div style={{ height: "1px", width: "100%", backgroundColor: "#ccc", margin: "20px" }} />
+
+      <Typography variant="body1" sx={{ fontFamily: "Poppins", margin: "20px" }}>
+        Please use a wide screen like a laptop or desktop for the best experience. Thank you for playing Tic Tac Toe today! 🚀
+      </Typography>
     </Box>
   );
 };

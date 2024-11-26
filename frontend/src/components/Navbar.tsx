@@ -110,6 +110,7 @@ const Navbar: React.FC = () => {
                 sx={{
                   fontFamily: "Poppins, sans-serif",
                   paddingBottom: "8px",
+                  color: "red",
                 }}
               >
                 Logout
