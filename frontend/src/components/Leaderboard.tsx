@@ -11,8 +11,9 @@ import {
   Paper,
   CircularProgress,
   TextField,
+  InputAdornment,
 } from "@mui/material";
-import { ArrowUpward, ArrowDownward, Remove } from "@mui/icons-material";
+import { ArrowUpward, ArrowDownward, Remove, Search } from "@mui/icons-material";
 
 const Leaderboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -50,7 +51,7 @@ const Leaderboard: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchLoading(true);
     const filtered = leaderboard.filter((entry: any) =>
-      entry.username.toLowerCase().includes(value.toLowerCase()),
+      entry.username.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredLeaderboard(filtered);
     setSearchLoading(false);
@@ -99,11 +100,18 @@ const Leaderboard: React.FC = () => {
       </Typography>
       {/* Search Field */}
       <TextField
-        label="Search Players"
+        label="Search for Players"
         fullWidth
         margin="normal"
         value={search}
         onChange={onSearchChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
         sx={{
           "& .MuiInputBase-input": {
             fontFamily: "Poppins",
@@ -201,8 +209,7 @@ const Leaderboard: React.FC = () => {
                       alignItems: "center",
                     }}
                   >
-                    <ArrowDownward sx={{ mr: 0.5 }} /> {entry.totalLosses}{" "}
-                    Losses
+                    <ArrowDownward sx={{ mr: 0.5 }} /> {entry.totalLosses} Losses
                   </Typography>
                   <Typography
                     sx={{
