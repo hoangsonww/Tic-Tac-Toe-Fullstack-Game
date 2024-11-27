@@ -58,6 +58,7 @@ const Register: React.FC = () => {
         maxWidth: 400,
         mx: "auto",
         mt: 5,
+        mb: 5,
         p: 3,
         bgcolor: "background.paper",
         borderRadius: 2,
