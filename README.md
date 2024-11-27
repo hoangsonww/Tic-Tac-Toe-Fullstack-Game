@@ -336,7 +336,7 @@ tic-tac-toe-pro/
 ## **API Endpoints**
 
 | Endpoint                | Method | Description                                                                           |
-|-------------------------|--------|---------------------------------------------------------------------------------------|
+| ----------------------- | ------ | ------------------------------------------------------------------------------------- |
 | `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
 | `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
 | `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |
@@ -399,6 +399,7 @@ tic-tac-toe-pro/
 The **Tic Tac Toe Pro Game** can be containerized using Docker for easy deployment and scaling. Below are the steps to build and run the app in a Docker container:
 
 1. **Build and Run the Docker Image**:
+
    ```bash
    docker-compose up --build
    ```

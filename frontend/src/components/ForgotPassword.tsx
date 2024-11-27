@@ -7,7 +7,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { api } from "../utils/api";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");

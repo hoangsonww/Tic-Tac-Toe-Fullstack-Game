@@ -267,12 +267,10 @@ router.post("/ai-match", authenticate, async (req, res) => {
 
     await updateUserStats(player, newElo, result);
 
-    res
-      .status(201)
-      .json({
-        message: "AI match result recorded successfully",
-        updatedPlayer,
-      });
+    res.status(201).json({
+      message: "AI match result recorded successfully",
+      updatedPlayer,
+    });
   } catch (error) {
     console.error("Error updating AI match result:", error);
     res.status(500).json({ error: "Failed to save match result" });

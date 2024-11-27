@@ -48,7 +48,7 @@ const Login: React.FC = () => {
 
   const handleKeyPress = (
     e: React.KeyboardEvent<HTMLDivElement>,
-    action: () => void
+    action: () => void,
   ) => {
     if (e.key === "Enter") {
       action();

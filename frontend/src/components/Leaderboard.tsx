@@ -13,7 +13,12 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import { ArrowUpward, ArrowDownward, Remove, Search } from "@mui/icons-material";
+import {
+  ArrowUpward,
+  ArrowDownward,
+  Remove,
+  Search,
+} from "@mui/icons-material";
 
 const Leaderboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -51,7 +56,7 @@ const Leaderboard: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchLoading(true);
     const filtered = leaderboard.filter((entry: any) =>
-      entry.username.toLowerCase().includes(value.toLowerCase())
+      entry.username.toLowerCase().includes(value.toLowerCase()),
     );
     setFilteredLeaderboard(filtered);
     setSearchLoading(false);
@@ -209,7 +214,8 @@ const Leaderboard: React.FC = () => {
                       alignItems: "center",
                     }}
                   >
-                    <ArrowDownward sx={{ mr: 0.5 }} /> {entry.totalLosses} Losses
+                    <ArrowDownward sx={{ mr: 0.5 }} /> {entry.totalLosses}{" "}
+                    Losses
                   </Typography>
                   <Typography
                     sx={{
