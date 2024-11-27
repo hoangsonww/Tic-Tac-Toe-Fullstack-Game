@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
             variant="h6"
             sx={{ flexGrow: 1, fontFamily: "Poppins, sans-serif", fontSize: "1.5rem" }}
           >
-            Tic Tac Toe
+            Tic Tac Toe Pro
           </Typography>
           {/* Hamburger Menu for Mobile */}
           <Box sx={{ display: { xs: "block", md: "none" } }}>

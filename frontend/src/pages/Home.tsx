@@ -13,7 +13,7 @@ const Home: React.FC = () => {
   return (
     <Box sx={{ textAlign: "center", py: 5 }}>
       <Typography variant="h4" gutterBottom sx={{ fontFamily: "Poppins", mb: 2, fontWeight: "bold" }}>
-        Tic Tac Toe Game
+        Tic Tac Toe Pro Game
       </Typography>
       {/* Divider */}
       <div style={{ width: "100%", borderBottom: "1px solid #e0e0e0", margin: "0 auto 20px" }} />
