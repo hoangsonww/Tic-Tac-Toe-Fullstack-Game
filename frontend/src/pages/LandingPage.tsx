@@ -30,6 +30,8 @@ const LandingPage: React.FC = () => {
   const isDarkMode = theme.palette.mode === "dark";
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const themeColor = "#1976d2";
+
   return (
     <Box
       sx={{
@@ -44,7 +46,7 @@ const LandingPage: React.FC = () => {
         sx={{
           textAlign: "center",
           padding: "2rem",
-          backgroundColor: isDarkMode ? "#333" : "#1976d2",
+          backgroundColor: themeColor,
           color: "white",
           borderRadius: 2,
           boxShadow: 3,
@@ -67,7 +69,6 @@ const LandingPage: React.FC = () => {
           sx={{
             marginBottom: "2rem",
             fontFamily: "Poppins",
-            color: "white",
             fontSize: isSmallScreen ? "1rem" : "1.2rem",
           }}
         >
@@ -79,13 +80,13 @@ const LandingPage: React.FC = () => {
           to="/register"
           variant="contained"
           sx={{
-            backgroundColor: "#f57c00",
-            color: "white",
+            backgroundColor: "white",
+            color: themeColor,
             padding: "0.75rem 1.5rem",
             fontFamily: "Poppins",
             fontWeight: 600,
             "&:hover": {
-              backgroundColor: "#ee8d00",
+              backgroundColor: "#e3f2fd",
             },
           }}
         >
@@ -165,7 +166,7 @@ const LandingPage: React.FC = () => {
                       marginBottom: "1rem",
                       fontFamily: "Poppins",
                       fontWeight: 600,
-                      color: "#f57c00",
+                      color: themeColor,
                     }}
                   >
                     {feature.title}
@@ -186,11 +187,11 @@ const LandingPage: React.FC = () => {
                     to={feature.link}
                     variant="contained"
                     sx={{
-                      backgroundColor: "#f57c00",
+                      backgroundColor: themeColor,
                       color: "white",
                       fontFamily: "Poppins",
                       "&:hover": {
-                        backgroundColor: "#e68900",
+                        backgroundColor: "#005bb5",
                       },
                     }}
                   >
@@ -209,7 +210,7 @@ const LandingPage: React.FC = () => {
           mt: 6,
           py: 4,
           textAlign: "center",
-          backgroundColor: isDarkMode ? "#333" : "#f57c00",
+          backgroundColor: themeColor,
           color: "white",
           borderRadius: 2,
           boxShadow: 3,
@@ -237,6 +238,67 @@ const LandingPage: React.FC = () => {
           Our platform offers an exciting twist to the classic game, featuring
           AI-powered opponents, global rankings, and customizable game settings
           to suit your style. Play, compete, and become a Tic Tac Toe Pro!
+        </Typography>
+      </Box>
+
+      {/* Additional Information Section */}
+      <Box
+        sx={{
+          mt: 6,
+          py: 4,
+          textAlign: "center",
+          backgroundColor: isDarkMode ? "#333" : "#f5f5f5",
+          color: isDarkMode ? "white" : "black",
+          borderRadius: 2,
+          boxShadow: 3,
+          animation: `${slideUp} 1s ease-out`,
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            mb: 2,
+            fontFamily: "Poppins",
+            fontWeight: 600,
+          }}
+        >
+          Ready to Get Started?
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            maxWidth: 800,
+            mx: "auto",
+            fontFamily: "Poppins",
+          }}
+        >
+          Join Tic Tac Toe Pro today and experience the ultimate gaming
+          platform. Play against AI, challenge your friends, and climb the
+          global leaderboard!
+        </Typography>
+        <Button
+          component={Link}
+          to="/register"
+          variant="contained"
+          sx={{
+            mt: 3,
+            backgroundColor: themeColor,
+            color: "white",
+            padding: "0.75rem 1.5rem",
+            fontFamily: "Poppins",
+            fontWeight: 600,
+            "&:hover": {
+              backgroundColor: "#005bb5",
+            },
+          }}
+        >
+          Get Started
+        </Button>
+        <Typography variant="body1" sx={{ mt: 2, fontFamily: 'Poppins' }}>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: themeColor }}>
+            Login
+          </Link>
         </Typography>
       </Box>
     </Box>
