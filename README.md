@@ -274,18 +274,30 @@ tic-tac-toe-pro/
 │   ├── .env
 ├── frontend/
 │   ├── public/
+│   │   ├── favicon.ico
+│   │   ├── manifest.json
+│   │   ├── sitemap.xml
+│   │   ├── robots.txt
 │   │   ├── index.html
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Navbar.js
-│   │   │   ├── Footer.js
-│   │   │   ├── Leaderboard.js
-│   │   │   ├── Spinner.js
+│   │   │   ├── Board.tsx
+│   │   │   ├── Cell.tsx
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Leaderboard.tsx
+│   │   │   ├── Profile.tsx
+│   │   │   ├── ForgotPassword.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── Register.tsx
+│   │   │   ├── Settings.tsx
 │   │   ├── pages/
-│   │   │   ├── Home.js
-│   │   │   ├── Login.js
-│   │   │   ├── Register.js
-│   │   │   ├── ForgotPassword.js
+│   │   │   ├── Home.tsx
+│   │   │   ├── LandingPage.tsx
+│   │   ├── utils/
+│   │   │   ├── api.ts
+│   │   │   ├── ai.ts
+│   │   │   ├── helpers.ts
 │   │   ├── App.js
 │   │   ├── api.js
 │   ├── .env
