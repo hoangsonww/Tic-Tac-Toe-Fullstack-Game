@@ -7,6 +7,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { api } from "../utils/api";
+import {useNavigate} from "react-router-dom";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ const ForgotPassword: React.FC = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleVerifyEmail = async () => {
     setLoading(true);
@@ -45,6 +47,7 @@ const ForgotPassword: React.FC = () => {
       setEmail("");
       setNewPassword("");
       setConfirmPassword("");
+      navigate("/login");
     } catch (err) {
       setError("Failed to reset password. Please try again.");
     } finally {
