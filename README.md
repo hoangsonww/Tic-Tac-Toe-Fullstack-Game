@@ -12,8 +12,8 @@ Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack app
 - [Technologies](#technologies)
 - [User Interface](#user-interface)
 - [File Structure](#file-structure)
-- [Setup Instructions](#setup-instructions)
 - [API Endpoints](#api-endpoints)
+- [Setup Instructions](#setup-instructions)
 - [Containerization](#containerization)
 - [Contributing](#contributing)
 - [License](#license)
@@ -271,6 +271,8 @@ tic-tac-toe-pro/
 │   ├── swagger/
 │   │   ├── config.js
 │   ├── server.js
+│   ├── package.json
+│   ├── Dockerfile
 │   ├── .env
 ├── frontend/
 │   ├── public/
@@ -298,9 +300,25 @@ tic-tac-toe-pro/
 │   │   │   ├── api.ts
 │   │   │   ├── ai.ts
 │   │   │   ├── helpers.ts
-│   │   ├── App.js
-│   │   ├── api.js
+│   │   ├── App.tsx
+│   │   ├── index.tsx
+│   │   ├── index.css
+│   │   ├── styles.css
+│   │   ├── App.test.tsx
+│   │   ├── reportWebVitals.ts
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── Dockerfile
 │   ├── .env
+├── kubernetes/
+│   ├── configmap.yaml
+│   ├── backend-deployment.yaml
+│   ├── backend-service.yaml
+│   ├── frontend-deployment.yaml
+│   ├── frontend-service.yaml
+├── nginx/
+│   ├── nginx.conf
+│   ├── Dockerfile
 ├── images/
 │   ├── landing.png
 │   ├── leaderboard.png
@@ -308,7 +326,27 @@ tic-tac-toe-pro/
 │   ├── game.png
 │   ├── mobile-view.png
 ├── README.md
+├── LICENSE
+├── .gitignore
+├── Dockerfile
+├── Jenkinsfile
+├── docker-compose.yml
 ```
+
+## **API Endpoints**
+
+| Endpoint                | Method | Description                                                                           |
+|-------------------------|--------|---------------------------------------------------------------------------------------|
+| `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
+| `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
+| `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |
+| `/auth/reset-password`  | POST   | Reset the password for a user.                                                        |
+| `/profile`              | GET    | Fetch the authenticated user's profile.                                               |
+| `/profile`              | PUT    | Update the authenticated user's profile (bio, date of birth, and social media links). |
+| `/profile/games`        | PUT    | Increment the number of games played by the user.                                     |
+| `/leaderboard`          | GET    | Fetch the global leaderboard, sorted by ELO.                                          |
+| `/leaderboard/match`    | POST   | Report a match result between two players and update their ELO ratings.               |
+| `/leaderboard/ai-match` | POST   | Report a match result against AI and update the player's ELO rating.                  |
 
 ## **Setup Instructions**
 
@@ -355,21 +393,6 @@ tic-tac-toe-pro/
 - Swagger UI: `http://localhost:4000/api-docs`
 - Live: `https://tictactoe-ai-app.vercel.app/`
 - Live API: `https://tic-tac-toe-fullstack-game.onrender.com/`
-
-## **API Endpoints**
-
-| Endpoint                | Method | Description                                                                           |
-|-------------------------|--------|---------------------------------------------------------------------------------------|
-| `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
-| `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
-| `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |
-| `/auth/reset-password`  | POST   | Reset the password for a user.                                                        |
-| `/profile`              | GET    | Fetch the authenticated user's profile.                                               |
-| `/profile`              | PUT    | Update the authenticated user's profile (bio, date of birth, and social media links). |
-| `/profile/games`        | PUT    | Increment the number of games played by the user.                                     |
-| `/leaderboard`          | GET    | Fetch the global leaderboard, sorted by ELO.                                          |
-| `/leaderboard/match`    | POST   | Report a match result between two players and update their ELO ratings.               |
-| `/leaderboard/ai-match` | POST   | Report a match result against AI and update the player's ELO rating.                  |
 
 ## **Containerization**
 
