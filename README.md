@@ -44,6 +44,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 ![Frontend Vercel](https://img.shields.io/badge/Frontend%20Vercel-Up-brightgreen?style=flat-square&logo=vercel)
 ![Backend Render](https://img.shields.io/badge/Backend%20Render-Up-brightgreen?style=flat-square&logo=render)
 ![MongoDB Atlas](https://img.shields.io/badge/MongoDB%20Atlas-Connected-brightgreen?style=flat-square&logo=mongodb)
+![Netlify Backup](https://img.shields.io/badge/Netlify%20Backup-Ready-brightgreen?style=flat-square&logo=netlify)
 ![Deployment Docker](https://img.shields.io/badge/Deployment%20Docker-Running-brightgreen?style=flat-square&logo=docker)
 ![Swagger Documentation](https://img.shields.io/badge/Swagger%20Docs-Available-brightgreen?style=flat-square&logo=swagger)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-Passing-brightgreen?style=flat-square&logo=githubactions)
