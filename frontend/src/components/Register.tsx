@@ -22,18 +22,33 @@ const Register: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const onSubmit = async (data: any) => {
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
     setLoading(true);
     setError(""); // Clear previous errors
     try {
-      await api.post("/auth/register", data);
+      await api.post("/auth/register", { ...data, password });
       navigate("/login");
     } catch (err: any) {
       console.error("Registration failed:", err);
       setError(err?.response?.data?.error || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    action: () => void
+  ) => {
+    if (e.key === "Enter") {
+      action();
     }
   };
 
@@ -87,6 +102,7 @@ const Register: React.FC = () => {
           margin="normal"
           type="email"
           required
+          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",
@@ -97,11 +113,31 @@ const Register: React.FC = () => {
           }}
         />
         <TextField
-          {...register("password")}
           label="Password"
           fullWidth
           margin="normal"
           type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
+          required
+          sx={{
+            "& .MuiInputBase-input": {
+              fontFamily: "Poppins",
+            },
+            "& .MuiInputLabel-root": {
+              fontFamily: "Poppins",
+            },
+          }}
+        />
+        <TextField
+          label="Confirm Password"
+          fullWidth
+          margin="normal"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           required
           sx={{
             "& .MuiInputBase-input": {
@@ -118,6 +154,7 @@ const Register: React.FC = () => {
           fullWidth
           margin="normal"
           required
+          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",

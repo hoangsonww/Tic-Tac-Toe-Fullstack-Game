@@ -11,6 +11,8 @@ import {
   ListItemText,
   Box,
   Button,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -20,10 +22,15 @@ import {
   ExitToApp,
   Login,
   AppRegistration,
+  DarkMode as DarkModeIcon,
+  LightMode as LightModeIcon,
 } from "@mui/icons-material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
+                                                                              isDarkMode,
+                                                                              toggleTheme,
+                                                                            }) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +43,7 @@ const Navbar: React.FC = () => {
   const isLoggedIn = !!localStorage.getItem("token");
 
   const menuItems = [
-    { label: "Home", icon: <Home />, path: "/" },
+    { label: "Home", icon: <Home />, path: "/home" },
     { label: "Leaderboard", icon: <Leaderboard />, path: "/leaderboard" },
     ...(isLoggedIn
       ? [{ label: "Profile", icon: <AccountCircle />, path: "/profile" }]
@@ -45,26 +52,27 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" color="primary">
         <Toolbar>
-          <Typography
-            variant="h6"
-            sx={{ flexGrow: 1, fontFamily: "Poppins, sans-serif", fontSize: "1.5rem" }}
-          >
-            Tic Tac Toe Pro
-          </Typography>
-          {/* Hamburger Menu for Mobile */}
-          <Box sx={{ display: { xs: "block", md: "none" } }}>
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={() => setDrawerOpen(true)}
+          {/* Logo/Title */}
+            <Typography
+              variant="h6"
+              sx={{ flexGrow: 1, fontFamily: "Poppins, sans-serif", fontSize: "1.5rem", fontWeight: 'bold' }}
             >
+              <Link to={"/landing"} style={{ textDecoration: "none", color: "white" }}>
+                Tic Tac Toe Pro
+              </Link>
+            </Typography>
+
+          {/* Mobile Hamburger Menu */}
+          <Box sx={{ display: { xs: "block", md: "none" } }}>
+            <IconButton color="inherit" edge="start" onClick={() => setDrawerOpen(true)}>
               <MenuIcon />
             </IconButton>
           </Box>
-          {/* Menu for Desktop */}
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+
+          {/* Desktop Menu */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
             {menuItems.map((item, index) => (
               <Button
                 key={index}
@@ -84,7 +92,7 @@ const Navbar: React.FC = () => {
                 {item.label}
               </Button>
             ))}
-            {/* Register Button (Always Visible) */}
+            {/* Register Button */}
             <Button
               color="inherit"
               component={Link}
@@ -132,10 +140,15 @@ const Navbar: React.FC = () => {
                 Login
               </Button>
             )}
+            {/* Dark Mode Toggle Button */}
+            <IconButton color="inherit" onClick={toggleTheme} sx={{ ml: 2 }}>
+              {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
-          {/* Drawer for Mobile Menu */}
+
+      {/* Drawer for Mobile Menu */}
       <Drawer
         anchor="left"
         open={isDrawerOpen}
@@ -153,23 +166,19 @@ const Navbar: React.FC = () => {
                 padding: "10px 16px",
               }}
             >
-              <ListItemIcon
-                sx={{
-                  color: "#333",
-                }}
-              >
+              <ListItemIcon sx={{ color: isDarkMode ? "white" : "#333" }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
                   fontFamily: "Poppins, sans-serif",
-                  color: "#333",
+                  color: isDarkMode ? "white" : "#333",
                 }}
               />
             </ListItem>
           ))}
-          {/* Register Button (Always Visible) */}
+          {/* Register Button */}
           <ListItem
             component={Link}
             to="/register"
@@ -179,18 +188,14 @@ const Navbar: React.FC = () => {
               padding: "10px 16px",
             }}
           >
-            <ListItemIcon
-              sx={{
-                color: "#333",
-              }}
-            >
+            <ListItemIcon sx={{ color: isDarkMode ? "white" : "#333" }}>
               <AppRegistration />
             </ListItemIcon>
             <ListItemText
               primary="Register"
               primaryTypographyProps={{
                 fontFamily: "Poppins, sans-serif",
-                color: "#333",
+                color: isDarkMode ? "white" : "#333",
               }}
             />
           </ListItem>
@@ -206,13 +211,14 @@ const Navbar: React.FC = () => {
                 padding: "10px 16px",
               }}
             >
-              <ListItemIcon>
+              <ListItemIcon sx={{ color: isDarkMode ? "white" : "#333" }}>
                 <ExitToApp />
               </ListItemIcon>
               <ListItemText
                 primary="Logout"
                 primaryTypographyProps={{
                   fontFamily: "Poppins, sans-serif",
+                  color: isDarkMode ? "white" : "#333",
                 }}
               />
             </ListItem>
@@ -226,22 +232,35 @@ const Navbar: React.FC = () => {
                 padding: "10px 16px",
               }}
             >
-              <ListItemIcon
-                sx={{
-                  color: "#333",
-                }}
-              >
+              <ListItemIcon sx={{ color: isDarkMode ? "white" : "#333" }}>
                 <Login />
               </ListItemIcon>
               <ListItemText
                 primary="Login"
                 primaryTypographyProps={{
                   fontFamily: "Poppins, sans-serif",
-                  color: "#333",
+                  color: isDarkMode ? "white" : "#333",
                 }}
               />
             </ListItem>
           )}
+          {/* Dark Mode Toggle in Drawer */}
+          <ListItem>
+            <ListItemIcon sx={{ color: isDarkMode ? "white" : "#333" }}>
+              {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            </ListItemIcon>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isDarkMode}
+                  onChange={toggleTheme}
+                  color="primary"
+                />
+              }
+              label={isDarkMode ? "Light Mode" : "Dark Mode"}
+              sx={{ fontFamily: "Poppins, sans-serif", ml: -1 }}
+            />
+          </ListItem>
         </List>
       </Drawer>
     </>

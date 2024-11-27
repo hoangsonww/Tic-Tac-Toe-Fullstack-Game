@@ -18,6 +18,7 @@ const Cell: React.FC<CellProps> = ({ value, onClick }) => {
         alignItems: "center",
         justifyContent: "center",
         fontSize: "24px",
+        fontWeight: "bold",
         cursor: "pointer",
         backgroundColor: value ? "#f5f5f5" : "white",
         borderRadius: "8px",

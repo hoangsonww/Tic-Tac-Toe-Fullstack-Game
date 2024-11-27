@@ -1,7 +1,32 @@
 {
   "name": "tic-tac-toe",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.1.0",
+  "private": false,
+  "description": "Tic Tac Toe game with authentication and leaderboard.",
+  "author": "Son Nguyen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoangsonww/Tic-Tac-Toe-Fullstack-Game.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hoangsonww/Tic-Tac-Toe-Fullstack-Game/issues",
+    "email": "hoangson091104@gmail.com"
+  },
+  "keywords": [
+    "tic-tac-toe",
+    "fullstack",
+    "authentication",
+    "leaderboard",
+    "game",
+    "React",
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "RESTful API",
+    "Material-UI",
+    "game development"
+  ],
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",

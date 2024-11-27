@@ -9,15 +9,36 @@ import {
   ListItemAvatar,
   Avatar,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import { ArrowUpward, ArrowDownward, Remove } from "@mui/icons-material";
 
 const Leaderboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    api.get("/leaderboard").then((response) => setLeaderboard(response.data));
+    api
+      .get("/leaderboard")
+      .then((response) => setLeaderboard(response.data))
+      .catch((error) => console.error("Failed to fetch leaderboard:", error))
+      .finally(() => setLoading(false)); // Stop loading when the data is fetched or an error occurs
   }, []);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh", // Full page height
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box

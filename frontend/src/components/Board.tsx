@@ -114,7 +114,7 @@ const Board: React.FC<BoardProps> = ({
     if (!username) return;
 
     try {
-      const response = await fetch("http://localhost:4000/leaderboard/ai-match", {
+      const response = await fetch("https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/ai-match", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

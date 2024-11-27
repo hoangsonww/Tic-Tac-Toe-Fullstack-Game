@@ -4,7 +4,43 @@ const User = require("../models/User");
 
 const router = express.Router();
 
-// Register a new user
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: API for user authentication and password management
+ */
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *               username:
+ *                 type: string
+ *                 description: User's unique username
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: All fields are required or Email/Username already exists
+ */
 router.post("/register", async (req, res) => {
   const { email, password, username } = req.body;
 
@@ -23,7 +59,46 @@ router.post("/register", async (req, res) => {
   res.status(201).json({ message: "User registered successfully" });
 });
 
-// Login a user
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for authentication
+ *                 username:
+ *                   type: string
+ *                   description: Username of the logged-in user
+ *       401:
+ *         description: Invalid email or password
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -44,7 +119,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Forgot password: Verify if email exists
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Verify if the email exists for password reset
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email
+ *     responses:
+ *       200:
+ *         description: User verified successfully
+ *       400:
+ *         description: Email is required
+ *       404:
+ *         description: User with this email does not exist
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
 
@@ -65,7 +167,37 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
-// Reset password
+/**
+ * @swagger
+ * /auth/reset-password:
+ *   post:
+ *     summary: Reset the password of a user
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email
+ *               newPassword:
+ *                 type: string
+ *                 description: New password for the user
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *       400:
+ *         description: Email and new password are required
+ *       404:
+ *         description: User with this email does not exist
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/reset-password", async (req, res) => {
   const { email, newPassword } = req.body;
 

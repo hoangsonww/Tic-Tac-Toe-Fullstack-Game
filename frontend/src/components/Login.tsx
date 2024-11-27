@@ -43,6 +43,15 @@ const Login: React.FC = () => {
       });
   };
 
+  const handleKeyPress = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    action: () => void
+  ) => {
+    if (e.key === "Enter") {
+      action();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -93,6 +102,7 @@ const Login: React.FC = () => {
           margin="normal"
           type="email"
           required
+          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",
@@ -109,6 +119,7 @@ const Login: React.FC = () => {
           margin="normal"
           type="password"
           required
+          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",

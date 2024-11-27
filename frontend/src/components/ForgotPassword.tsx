@@ -11,6 +11,7 @@ import { api } from "../utils/api";
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,6 +30,10 @@ const ForgotPassword: React.FC = () => {
   };
 
   const handleResetPassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -37,10 +42,17 @@ const ForgotPassword: React.FC = () => {
       setIsEmailVerified(false);
       setEmail("");
       setNewPassword("");
+      setConfirmPassword("");
     } catch (err) {
       setError("Failed to reset password. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>, action: () => void) => {
+    if (e.key === "Enter") {
+      action();
     }
   };
 
@@ -86,7 +98,9 @@ const ForgotPassword: React.FC = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyPress={(e) => handleKeyPress(e, handleVerifyEmail)}
             sx={{
+              mt: 0,
               "& .MuiInputBase-input": {
                 fontFamily: "Poppins",
               },
@@ -120,6 +134,24 @@ const ForgotPassword: React.FC = () => {
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            onKeyPress={(e) => handleKeyPress(e, handleResetPassword)}
+            sx={{
+              "& .MuiInputBase-input": {
+                fontFamily: "Poppins",
+              },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Poppins",
+              },
+            }}
+          />
+          <TextField
+            label="Confirm Password"
+            fullWidth
+            margin="normal"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            onKeyPress={(e) => handleKeyPress(e, handleResetPassword)}
             sx={{
               "& .MuiInputBase-input": {
                 fontFamily: "Poppins",
