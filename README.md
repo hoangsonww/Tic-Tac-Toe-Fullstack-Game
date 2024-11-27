@@ -36,6 +36,7 @@ The Tic Tac Toe Pro Game is live and accessible at the following URLs:
 
 - **Frontend**: [Tic Tac Toe Pro Game](https://tictactoe-ai-app.vercel.app/)
 - **Backend**: [Tic Tac Toe Pro API](https://tic-tac-toe-fullstack-game.onrender.com/)
+- **Backup**: [Netlify Deployment](https://tictactoe-ai-game.netlify.app)
 
 Feel free to explore the app, play a few games, and check out the leaderboard!
 
