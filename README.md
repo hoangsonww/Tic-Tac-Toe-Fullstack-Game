@@ -1,4 +1,4 @@
-# **Tic Tac Toe Pro Game**
+# **Tic Tac Toe Pro Game 🕹️**
 
 Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack application featuring multiplayer Tic Tac Toe gameplay, AI integration, user profiles, leaderboards, and more. The backend is built with **Node.js**, **Express**, and **MongoDB**, while the frontend leverages **React** and **Material-UI** for a polished, responsive user interface.
 
@@ -367,3 +367,5 @@ Feel free to reach out with any questions or suggestions.
 ---
 
 **Created in 2024 with ❤️ by [Son Nguyen](https://github.com/hoangsonww)**
+
+[🔝 Back to Top](#docuthinker---ai-powered-document-analysis-and-summarization-app)
