@@ -142,15 +142,26 @@ router.post("/match", authenticate, async (req, res) => {
     const playerEntry = await LeaderboardEntry.findOneAndUpdate(
       { username: player },
       {
-        $setOnInsert: { elo: BASE_ELO, totalWins: 0, totalLosses: 0, totalDraws: 0 },
+        $setOnInsert: {
+          elo: BASE_ELO,
+          totalWins: 0,
+          totalLosses: 0,
+          totalDraws: 0,
+        },
       },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     const opponentElo = opponent
-      ? (await LeaderboardEntry.findOne({ username: opponent }))?.elo || BASE_ELO
+      ? (await LeaderboardEntry.findOne({ username: opponent }))?.elo ||
+        BASE_ELO
       : BASE_ELO;
-    const newElo = calculateElo(playerEntry.elo, opponentElo, result, difficulty);
+    const newElo = calculateElo(
+      playerEntry.elo,
+      opponentElo,
+      result,
+      difficulty,
+    );
 
     const incrementFields = {};
     if (result === "win") incrementFields.totalWins = 1;
@@ -163,12 +174,14 @@ router.post("/match", authenticate, async (req, res) => {
         $set: { elo: newElo },
         $inc: incrementFields,
       },
-      { new: true }
+      { new: true },
     );
 
     await updateUserStats(player, newElo, result);
 
-    res.status(201).json({ message: "Match result recorded successfully", updatedPlayer });
+    res
+      .status(201)
+      .json({ message: "Match result recorded successfully", updatedPlayer });
   } catch (error) {
     console.error("Error updating match result:", error);
     res.status(500).json({ error: "Failed to save match result" });
@@ -226,9 +239,14 @@ router.post("/ai-match", authenticate, async (req, res) => {
     const playerEntry = await LeaderboardEntry.findOneAndUpdate(
       { username: player },
       {
-        $setOnInsert: { elo: BASE_ELO, totalWins: 0, totalLosses: 0, totalDraws: 0 },
+        $setOnInsert: {
+          elo: BASE_ELO,
+          totalWins: 0,
+          totalLosses: 0,
+          totalDraws: 0,
+        },
       },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     const newElo = calculateElo(playerEntry.elo, BASE_ELO, result, difficulty);
@@ -244,12 +262,17 @@ router.post("/ai-match", authenticate, async (req, res) => {
         $set: { elo: newElo },
         $inc: incrementFields,
       },
-      { new: true }
+      { new: true },
     );
 
     await updateUserStats(player, newElo, result);
 
-    res.status(201).json({ message: "AI match result recorded successfully", updatedPlayer });
+    res
+      .status(201)
+      .json({
+        message: "AI match result recorded successfully",
+        updatedPlayer,
+      });
   } catch (error) {
     console.error("Error updating AI match result:", error);
     res.status(500).json({ error: "Failed to save match result" });
@@ -304,7 +327,9 @@ router.get("/search", async (req, res) => {
   const { username } = req.query;
 
   if (!username) {
-    return res.status(400).json({ error: "Username query parameter is required." });
+    return res
+      .status(400)
+      .json({ error: "Username query parameter is required." });
   }
 
   try {

@@ -41,6 +41,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 ## **Features**
 
 ### **Frontend**
+
 - **Dynamic Gameplay**: Play against friends or AI with varying difficulty levels.
 - **Leaderboard**: View top-ranked players and search for specific users.
 - **Profile Management**: Update your profile with a bio, social media links, and more.
@@ -48,12 +49,14 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 - **Dark Mode Support**: Smooth toggling between light and dark themes.
 
 ### **Backend**
+
 - **User Authentication**: Secure registration, login, and password reset.
 - **ELO System**: Dynamic player rankings based on game results and difficulty.
 - **Swagger Documentation**: Interactive API documentation for developers.
 - **Game Stats**: Record game results and track wins, losses, and draws.
 
 ### **AI Integration**
+
 - **Minimax Algorithm**: AI opponent with optimal move selection.
 - **Difficulty Levels**: Choose from easy, medium, and hard AI modes.
 - **Real-Time Updates**: Instant feedback on AI moves and game results.
@@ -61,6 +64,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 ## **Technologies**
 
 ### **Frontend**
+
 - React
 - Material-UI
 - Axios
@@ -69,6 +73,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 - Local Storage for theme persistence
 
 ### **Backend**
+
 - Node.js
 - Express.js
 - MongoDB
@@ -275,6 +280,7 @@ tic-tac-toe-pro/
 ## **Setup Instructions**
 
 ### **Backend**
+
 1. Clone the repository and navigate to the backend folder:
    ```bash
    git clone https://github.com/hoangsonww/Tic-Tac-Toe-Fullstack-Game.git
@@ -295,6 +301,7 @@ tic-tac-toe-pro/
    ```
 
 ### **Frontend**
+
 1. Navigate to the frontend folder:
    ```bash
    cd Tic-Tac-Toe-Fullstack-Game/frontend
@@ -309,6 +316,7 @@ tic-tac-toe-pro/
    ```
 
 ### **Access the App**
+
 - Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:4000`
 - Swagger UI: `http://localhost:4000/api-docs`
@@ -318,7 +326,7 @@ tic-tac-toe-pro/
 ## **API Endpoints**
 
 | Endpoint                | Method | Description                                                                           |
-|-------------------------|--------|---------------------------------------------------------------------------------------|
+| ----------------------- | ------ | ------------------------------------------------------------------------------------- |
 | `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
 | `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
 | `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |

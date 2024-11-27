@@ -28,9 +28,9 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
-                                                                              isDarkMode,
-                                                                              toggleTheme,
-                                                                            }) => {
+  isDarkMode,
+  toggleTheme,
+}) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,24 +55,38 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
       <AppBar position="static" color="primary">
         <Toolbar>
           {/* Logo/Title */}
-            <Typography
-              variant="h6"
-              sx={{ flexGrow: 1, fontFamily: "Poppins, sans-serif", fontSize: "1.5rem", fontWeight: 'bold' }}
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+            }}
+          >
+            <Link
+              to={"/landing"}
+              style={{ textDecoration: "none", color: "white" }}
             >
-              <Link to={"/landing"} style={{ textDecoration: "none", color: "white" }}>
-                Tic Tac Toe Pro
-              </Link>
-            </Typography>
+              Tic Tac Toe Pro
+            </Link>
+          </Typography>
 
           {/* Mobile Hamburger Menu */}
           <Box sx={{ display: { xs: "block", md: "none" } }}>
-            <IconButton color="inherit" edge="start" onClick={() => setDrawerOpen(true)}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={() => setDrawerOpen(true)}
+            >
               <MenuIcon />
             </IconButton>
           </Box>
 
           {/* Desktop Menu */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+          <Box
+            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+          >
             {menuItems.map((item, index) => (
               <Button
                 key={index}
@@ -83,7 +97,9 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
                 sx={{
                   fontFamily: "Poppins, sans-serif",
                   borderBottom:
-                    location.pathname === item.path ? "3px solid white" : "none",
+                    location.pathname === item.path
+                      ? "3px solid white"
+                      : "none",
                   borderRadius: 0,
                   paddingBottom: "8px",
                   marginRight: "8px",
@@ -101,7 +117,9 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
               sx={{
                 fontFamily: "Poppins, sans-serif",
                 borderBottom:
-                  location.pathname === "/register" ? "3px solid white" : "none",
+                  location.pathname === "/register"
+                    ? "3px solid white"
+                    : "none",
                 borderRadius: 0,
                 paddingBottom: "8px",
                 marginRight: "8px",

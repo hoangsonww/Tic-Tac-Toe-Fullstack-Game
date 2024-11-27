@@ -25,7 +25,7 @@ app.use(
   swaggerUi.setup(swaggerDocs, {
     customCss: "",
     customSiteTitle: "Tic Tac Toe Pro API Docs",
-  })
+  }),
 );
 
 // Root route redirecting to Swagger UI
@@ -40,10 +40,15 @@ app.use("/leaderboard", leaderboardRoutes);
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Failed to connect to MongoDB:", err));
 
 // Start the server
 const PORT = 4000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`),
+);

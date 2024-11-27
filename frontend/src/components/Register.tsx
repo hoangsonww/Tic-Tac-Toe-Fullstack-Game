@@ -37,7 +37,9 @@ const Register: React.FC = () => {
       navigate("/login");
     } catch (err: any) {
       console.error("Registration failed:", err);
-      setError(err?.response?.data?.error || "Registration failed. Please try again.");
+      setError(
+        err?.response?.data?.error || "Registration failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,7 @@ const Register: React.FC = () => {
 
   const handleKeyPress = (
     e: React.KeyboardEvent<HTMLDivElement>,
-    action: () => void
+    action: () => void,
   ) => {
     if (e.key === "Enter") {
       action();
@@ -178,7 +180,11 @@ const Register: React.FC = () => {
             py: 1.5,
           }}
         >
-          {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Register"}
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: "white" }} />
+          ) : (
+            "Register"
+          )}
         </Button>
       </form>
       {error && (

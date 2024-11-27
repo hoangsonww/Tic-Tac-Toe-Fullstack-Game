@@ -20,7 +20,9 @@ interface SettingsProps {
   isAI: boolean;
   setIsAI: (isAI: boolean) => void;
   aiDifficulty: "easy" | "medium" | "hard" | "impossible";
-  setAIDifficulty: (difficulty: "easy" | "medium" | "hard" | "impossible") => void;
+  setAIDifficulty: (
+    difficulty: "easy" | "medium" | "hard" | "impossible",
+  ) => void;
   isTimerEnabled: boolean;
   setIsTimerEnabled: (enabled: boolean) => void;
   timerDuration: number;
@@ -28,17 +30,17 @@ interface SettingsProps {
 }
 
 const Settings: React.FC<SettingsProps> = ({
-                                             boardSize,
-                                             setBoardSize,
-                                             isAI,
-                                             setIsAI,
-                                             aiDifficulty,
-                                             setAIDifficulty,
-                                             isTimerEnabled,
-                                             setIsTimerEnabled,
-                                             timerDuration,
-                                             setTimerDuration,
-                                           }) => {
+  boardSize,
+  setBoardSize,
+  isAI,
+  setIsAI,
+  aiDifficulty,
+  setAIDifficulty,
+  isTimerEnabled,
+  setIsTimerEnabled,
+  timerDuration,
+  setTimerDuration,
+}) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -85,14 +87,11 @@ const Settings: React.FC<SettingsProps> = ({
           flexDirection: isSmallScreen ? "column" : "row",
           alignItems: "center",
           gap: 2,
-          mt: 0
+          mt: 0,
         }}
       >
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel
-            id="board-size-label"
-            sx={{ fontFamily: "Poppins" }}
-          >
+          <InputLabel id="board-size-label" sx={{ fontFamily: "Poppins" }}>
             Board Size
           </InputLabel>
           <Select
@@ -220,7 +219,10 @@ const Settings: React.FC<SettingsProps> = ({
               type="number"
               value={inputTimer}
               onChange={(e) => setInputTimer(Number(e.target.value))}
-              inputProps={{ min: 10, max: 300, style: {
+              inputProps={{
+                min: 10,
+                max: 300,
+                style: {
                   fontFamily: "Poppins, sans-serif",
                 },
               }}

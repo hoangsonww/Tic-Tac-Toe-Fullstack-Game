@@ -38,7 +38,9 @@ const ForgotPassword: React.FC = () => {
     setError("");
     try {
       await api.post("/auth/reset-password", { email, newPassword });
-      alert("Password reset successfully. Please log in with your new password.");
+      alert(
+        "Password reset successfully. Please log in with your new password.",
+      );
       setIsEmailVerified(false);
       setEmail("");
       setNewPassword("");
@@ -50,7 +52,10 @@ const ForgotPassword: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>, action: () => void) => {
+  const handleKeyPress = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    action: () => void,
+  ) => {
     if (e.key === "Enter") {
       action();
     }

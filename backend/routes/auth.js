@@ -157,7 +157,9 @@ router.post("/forgot-password", async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ error: "User with this email does not exist" });
+      return res
+        .status(404)
+        .json({ error: "User with this email does not exist" });
     }
 
     res.json({ message: "User verified successfully", email });
@@ -202,13 +204,17 @@ router.post("/reset-password", async (req, res) => {
   const { email, newPassword } = req.body;
 
   if (!email || !newPassword) {
-    return res.status(400).json({ error: "Email and new password are required" });
+    return res
+      .status(400)
+      .json({ error: "Email and new password are required" });
   }
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ error: "User with this email does not exist" });
+      return res
+        .status(404)
+        .json({ error: "User with this email does not exist" });
     }
 
     user.password = newPassword;

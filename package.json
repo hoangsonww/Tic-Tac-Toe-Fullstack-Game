@@ -40,6 +40,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "axios": "^1.7.8",
+    "prettier": "^3.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
@@ -57,7 +58,8 @@
     "server": "cd backend && npm start",
     "backend": "cd backend && npm start",
     "frontend": "cd frontend && npm start",
-    "dev": "cd backend && npm start"
+    "dev": "cd backend && npm start",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,css,html,md}\""
   },
   "eslintConfig": {
     "extends": [

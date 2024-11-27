@@ -53,7 +53,7 @@ const router = express.Router();
 router.get("/", authenticate, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select(
-      "username email dob bio profilePicture socialMedia elo gamesPlayed"
+      "username email dob bio profilePicture socialMedia elo gamesPlayed",
     );
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json(user);
@@ -118,7 +118,13 @@ router.put("/", authenticate, async (req, res) => {
     if (bio) user.bio = bio;
 
     if (socialMedia) {
-      const allowedPlatforms = ["github", "twitter", "facebook", "instagram", "linkedin"];
+      const allowedPlatforms = [
+        "github",
+        "twitter",
+        "facebook",
+        "instagram",
+        "linkedin",
+      ];
 
       user.socialMedia = user.socialMedia || {};
 

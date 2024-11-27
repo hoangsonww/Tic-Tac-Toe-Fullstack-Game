@@ -10,7 +10,12 @@ import Register from "./components/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./components/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
-import { ThemeProvider, createTheme, CssBaseline, GlobalStyles } from "@mui/material";
+import {
+  ThemeProvider,
+  createTheme,
+  CssBaseline,
+  GlobalStyles,
+} from "@mui/material";
 
 const App: React.FC = () => {
   const [isDarkMode, setDarkMode] = useState<boolean>(() => {

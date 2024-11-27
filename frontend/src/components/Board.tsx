@@ -13,14 +13,14 @@ interface BoardProps {
 }
 
 const Board: React.FC<BoardProps> = ({
-                                       boardSize,
-                                       isAI,
-                                       aiDifficulty,
-                                       isTimerEnabled,
-                                       timerDuration,
-                                     }) => {
+  boardSize,
+  isAI,
+  aiDifficulty,
+  isTimerEnabled,
+  timerDuration,
+}) => {
   const [board, setBoard] = useState(
-    Array.from({ length: boardSize }, () => Array(boardSize).fill(""))
+    Array.from({ length: boardSize }, () => Array(boardSize).fill("")),
   );
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<string | null>(null);
@@ -58,13 +58,14 @@ const Board: React.FC<BoardProps> = ({
     if (board[row][col] || winner) return;
 
     const updatedBoard = board.map((r, i) =>
-      r.map((cell, j) => (i === row && j === col ? currentPlayer : cell))
+      r.map((cell, j) => (i === row && j === col ? currentPlayer : cell)),
     );
     setBoard(updatedBoard);
 
     const gameWinner = calculateWinner(updatedBoard);
     if (gameWinner) {
-      const resultMessage = gameWinner === "X" ? "Player X wins!" : "Player O wins!";
+      const resultMessage =
+        gameWinner === "X" ? "Player X wins!" : "Player O wins!";
       setWinner(resultMessage);
 
       if (isAI) {
@@ -87,7 +88,9 @@ const Board: React.FC<BoardProps> = ({
         const aiMove = getAIMove(updatedBoard, aiDifficulty);
         if (aiMove) {
           const aiUpdatedBoard = updatedBoard.map((r, i) =>
-            r.map((cell, j) => (i === aiMove.row && j === aiMove.col ? "O" : cell))
+            r.map((cell, j) =>
+              i === aiMove.row && j === aiMove.col ? "O" : cell,
+            ),
           );
           setBoard(aiUpdatedBoard);
 
@@ -116,14 +119,21 @@ const Board: React.FC<BoardProps> = ({
     if (!username) return;
 
     try {
-      const response = await fetch("https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/ai-match", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authentication
+      const response = await fetch(
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/ai-match",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token for authentication
+          },
+          body: JSON.stringify({
+            player: username,
+            result,
+            difficulty: aiDifficulty,
+          }),
         },
-        body: JSON.stringify({ player: username, result, difficulty: aiDifficulty }),
-      });
+      );
 
       if (!response.ok) {
         console.error("Failed to update leaderboard:", await response.json());
@@ -138,7 +148,9 @@ const Board: React.FC<BoardProps> = ({
   };
 
   const resetBoard = () => {
-    setBoard(Array.from({ length: boardSize }, () => Array(boardSize).fill("")));
+    setBoard(
+      Array.from({ length: boardSize }, () => Array(boardSize).fill("")),
+    );
     setWinner(null);
     setIsDraw(false);
     setCurrentPlayer("X");
@@ -167,7 +179,8 @@ const Board: React.FC<BoardProps> = ({
       {isTimerEnabled && (
         <>
           <Typography variant="h6" sx={{ mb: 2, fontFamily: "Poppins" }}>
-            {currentPlayer}'s Turn - Time Left: {isTimerActive ? `${timeLeft}s` : "Paused"}
+            {currentPlayer}'s Turn - Time Left:{" "}
+            {isTimerActive ? `${timeLeft}s` : "Paused"}
           </Typography>
           {!isTimerActive && (
             <Button
@@ -190,8 +203,12 @@ const Board: React.FC<BoardProps> = ({
       >
         {board.map((row, i) =>
           row.map((cell, j) => (
-            <Cell key={`${i}-${j}`} value={cell} onClick={() => handleCellClick(i, j)} />
-          ))
+            <Cell
+              key={`${i}-${j}`}
+              value={cell}
+              onClick={() => handleCellClick(i, j)}
+            />
+          )),
         )}
       </Box>
       {winner && (
@@ -206,18 +223,35 @@ const Board: React.FC<BoardProps> = ({
       )}
 
       <Typography variant="h6" sx={{ fontFamily: "Poppins", mt: 2 }}>
-        {isAI ? "Player (X)" : "Player 1 (X)"} vs {isAI ? "AI (O)" : "Player 2 (O)"}
+        {isAI ? "Player (X)" : "Player 1 (X)"} vs{" "}
+        {isAI ? "AI (O)" : "Player 2 (O)"}
       </Typography>
 
-      <Button variant="contained" color="primary" onClick={resetBoard} sx={{ margin: 2, fontFamily: "Poppins" }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={resetBoard}
+        sx={{ margin: 2, fontFamily: "Poppins" }}
+      >
         Reset Board
       </Button>
 
       {/* Divider */}
-      <div style={{ height: "1px", width: "100%", backgroundColor: "#ccc", margin: "20px" }} />
+      <div
+        style={{
+          height: "1px",
+          width: "100%",
+          backgroundColor: "#ccc",
+          margin: "20px",
+        }}
+      />
 
-      <Typography variant="body1" sx={{ fontFamily: "Poppins", margin: "20px" }}>
-        Please use a wide screen like a laptop or desktop for the best experience. Thank you for playing Tic Tac Toe today! 🚀
+      <Typography
+        variant="body1"
+        sx={{ fontFamily: "Poppins", margin: "20px" }}
+      >
+        Please use a wide screen like a laptop or desktop for the best
+        experience. Thank you for playing Tic Tac Toe today! 🚀
       </Typography>
     </Box>
   );

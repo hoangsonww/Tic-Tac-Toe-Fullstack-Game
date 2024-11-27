@@ -2,8 +2,6 @@
 
 Welcome to the **Tic Tac Toe Pro Game** frontend! This is a fully-featured frontend built with **React** and **Material-UI**, designed for a seamless, responsive, and visually appealing gaming experience. The app integrates a leaderboard, user profiles, and multiplayer matches, including AI-based gameplay.
 
-
-
 ## **Table of Contents**
 
 - [**Overview**](#overview)
@@ -18,8 +16,6 @@ Welcome to the **Tic Tac Toe Pro Game** frontend! This is a fully-featured front
 - [**License**](#license)
 - [**Author**](#author)
 
-
-
 ## **Overview**
 
 The **Tic Tac Toe Pro Game** frontend offers a polished and interactive experience for users to play classic Tic Tac Toe games. It connects to a backend service to enable features like:
@@ -31,8 +27,6 @@ The **Tic Tac Toe Pro Game** frontend offers a polished and interactive experien
 
 The app is fully responsive and supports both light and dark modes, with user preferences stored for a personalized experience.
 
-
-
 ## **Live Demo**
 
 Experience the live app here:
@@ -40,11 +34,10 @@ Experience the live app here:
 > **Frontend**: [https://tic-tac-toe-pro.com](https://tic-tac-toe-pro.com)  
 > **Backend API**: [https://tic-tac-toe-pro-api.com](https://tic-tac-toe-pro-api.com)
 
-
-
 ## **Features**
 
 ### Core Features
+
 - **Dynamic Gameplay**: Play against friends or AI with varying difficulty levels.
 - **Leaderboard**: View top-ranked players globally.
 - **Profile Management**: Update your profile information, including a bio and social media links.
@@ -52,15 +45,15 @@ Experience the live app here:
 - **Dark Mode Support**: Toggle between light and dark modes with smooth transitions.
 
 ### Interactive Features
+
 - **Global Stats**: Track your wins, losses, and draws.
 - **AI Matchmaking**: Compete against AI with difficulty levels like Easy, Medium, Hard, and Impossible.
 - **Theme Persistence**: User preferences for light/dark mode are stored in `localStorage`.
 
-
-
 ## **Technologies**
 
 ### Frontend
+
 - **React**: A JavaScript library for building user interfaces.
 - **Material-UI**: A modern React UI framework for responsive designs.
 - **Axios**: For making API requests to the backend.
@@ -69,11 +62,10 @@ Experience the live app here:
 - **Local Storage**: To persist user settings like dark mode preferences.
 
 ### Backend Integration
+
 - **Express.js**: Backend framework for handling API requests.
 - **MongoDB**: Database for storing user and leaderboard data.
 - **JWT Authentication**: Secure authentication for user login and registration.
-
-
 
 ## **User Interface**
 
@@ -159,7 +151,6 @@ The profile page allows users to view and update their profile information, incl
   <img src="../images/profile-dark.png" alt="Profile Page (Dark Mode)" width="100%" style="border-radius: 8px">
 </p>
 
-
 ### Login Page
 
 The login page allows users to sign in with their email and password, with options for password recovery and new user registration.
@@ -226,8 +217,6 @@ The mobile drawer allows users to navigate between pages and access their profil
   <img src="../images/mobile-drawer.png" alt="Mobile Drawer" width="50%" style="border-radius: 8px">
 </p>
 
-
-
 ## **File Structure**
 
 ```
@@ -260,51 +249,50 @@ Tic-Tac-Toe-Pro-Frontend/
 └── ...                   # Additional configuration files
 ```
 
-
-
 ## **Setup Instructions**
 
 ### Prerequisites
+
 - Node.js (v14+)
 - npm or yarn
 - Backend server running locally or deployed
 
 ### Installation
+
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-repo/tic-tac-toe-pro.git
    cd tic-tac-toe-pro/frontend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm start
    ```
 
 4. Access the app at `http://localhost:3000`.
 
-
-
 ## **API Endpoints**
 
 The frontend interacts with the following backend endpoints:
 
-| **Method** | **Endpoint**              | **Description**                     |
-|------------|---------------------------|-------------------------------------|
-| `POST`     | `/auth/register`          | Registers a new user.               |
-| `POST`     | `/auth/login`             | Logs in a user and returns a token. |
-| `POST`     | `/auth/forgot-password`   | Verifies the user's email.          |
-| `POST`     | `/auth/reset-password`    | Resets the user's password.         |
-| `GET`      | `/leaderboard`            | Fetches the global leaderboard.     |
-| `GET`      | `/profile`                | Retrieves the user's profile data.  |
-| `PUT`      | `/profile`                | Updates the user's profile data.    |
-
-
+| **Method** | **Endpoint**            | **Description**                     |
+| ---------- | ----------------------- | ----------------------------------- |
+| `POST`     | `/auth/register`        | Registers a new user.               |
+| `POST`     | `/auth/login`           | Logs in a user and returns a token. |
+| `POST`     | `/auth/forgot-password` | Verifies the user's email.          |
+| `POST`     | `/auth/reset-password`  | Resets the user's password.         |
+| `GET`      | `/leaderboard`          | Fetches the global leaderboard.     |
+| `GET`      | `/profile`              | Retrieves the user's profile data.  |
+| `PUT`      | `/profile`              | Updates the user's profile data.    |
 
 ## **Contributing**
 
@@ -325,13 +313,9 @@ We welcome contributions to enhance the app! Here's how you can help:
    ```
 5. Submit a pull request.
 
-
-
 ## **License**
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
-
-
 
 ## **Author**
 

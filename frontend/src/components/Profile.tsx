@@ -29,7 +29,9 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [savingField, setSavingField] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [loadingPlatform, setLoadingPlatform] = useState<{ [key: string]: boolean }>({});
+  const [loadingPlatform, setLoadingPlatform] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   // Fetch profile data
   useEffect(() => {
@@ -70,7 +72,10 @@ const Profile: React.FC = () => {
 
       if (field === "dob" || field === "bio") {
         dataToUpdate[field] = profile[field];
-      } else if (field in profile.socialMedia || !profile.socialMedia?.[field]) {
+      } else if (
+        field in profile.socialMedia ||
+        !profile.socialMedia?.[field]
+      ) {
         dataToUpdate.socialMedia = {
           ...(profile.socialMedia || {}),
           [field]: profile.socialMedia?.[field] || "",
@@ -106,7 +111,7 @@ const Profile: React.FC = () => {
 
   const extractUsername = (url: string) => {
     const match = url.match(
-      /(?:https?:\/\/)?(?:www\.)?(?:github\.com|linkedin\.com\/in|facebook\.com|instagram\.com|twitter\.com|x\.com)\/([\w-]+)/i
+      /(?:https?:\/\/)?(?:www\.)?(?:github\.com|linkedin\.com\/in|facebook\.com|instagram\.com|twitter\.com|x\.com)\/([\w-]+)/i,
     );
     return match ? match[1] : url; // Return the username if matched, else return the input
   };
@@ -139,7 +144,9 @@ const Profile: React.FC = () => {
         },
       });
 
-      alert(`${platform.charAt(0).toUpperCase() + platform.slice(1)} updated successfully!`);
+      alert(
+        `${platform.charAt(0).toUpperCase() + platform.slice(1)} updated successfully!`,
+      );
       setIsEditing((prev) => ({ ...prev, [platform]: false })); // Close edit mode
     } catch (err) {
       console.error(`Failed to update ${platform}:`, err);
@@ -162,7 +169,12 @@ const Profile: React.FC = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -315,54 +327,79 @@ const Profile: React.FC = () => {
             </IconButton>
           </Typography>
         </Box>
-        {["github", "linkedin", "facebook", "instagram", "twitter"].map((platform) => (
-          <Box key={platform} mb={2} display="flex" alignItems="center" justifyContent="center">
-            {platform === "github" && <GitHub sx={{ mr: 1, color: "#1976d2" }} />}
-            {platform === "linkedin" && <LinkedIn sx={{ mr: 1, color: "#1976d2" }} />}
-            {platform === "facebook" && <Facebook sx={{ mr: 1, color: "#1976d2" }} />}
-            {platform === "instagram" && <Instagram sx={{ mr: 1, color: "#1976d2" }} />}
-            {platform === "twitter" && <Twitter sx={{ mr: 1, color: "#1976d2" }} />}
-            {isEditing[platform] ? (
-              <TextField
-                fullWidth
-                label={platform.charAt(0).toUpperCase() + platform.slice(1)}
-                value={profile.socialMedia?.[platform] || ""}
-                onChange={(e) => handleSocialMediaChange(platform, e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSocialMediaSave(platform)}
-                sx={{ fontFamily: "Poppins" }}
-                inputProps={{
-                  style: {
-                    fontFamily: "Poppins, sans-serif",
-                  },
-                }}
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "Poppins, sans-serif",
-                  },
-                }}
-              />
-            ) : (
-              <Button
-                href={formatSocialLink(platform, profile.socialMedia?.[platform])}
-                target="_blank"
-                sx={{ fontFamily: "Poppins" }}
-              >
-                {profile.socialMedia?.[platform] || "Not Set"}
-              </Button>
-            )}
-            <IconButton onClick={() => handleEditToggle(platform)}>
-              {isEditing[platform] ? (
-                loadingPlatform[platform] ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  <SaveIcon />
-                )
-              ) : (
-                <EditIcon />
+        {["github", "linkedin", "facebook", "instagram", "twitter"].map(
+          (platform) => (
+            <Box
+              key={platform}
+              mb={2}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              {platform === "github" && (
+                <GitHub sx={{ mr: 1, color: "#1976d2" }} />
               )}
-            </IconButton>
-          </Box>
-        ))}
+              {platform === "linkedin" && (
+                <LinkedIn sx={{ mr: 1, color: "#1976d2" }} />
+              )}
+              {platform === "facebook" && (
+                <Facebook sx={{ mr: 1, color: "#1976d2" }} />
+              )}
+              {platform === "instagram" && (
+                <Instagram sx={{ mr: 1, color: "#1976d2" }} />
+              )}
+              {platform === "twitter" && (
+                <Twitter sx={{ mr: 1, color: "#1976d2" }} />
+              )}
+              {isEditing[platform] ? (
+                <TextField
+                  fullWidth
+                  label={platform.charAt(0).toUpperCase() + platform.slice(1)}
+                  value={profile.socialMedia?.[platform] || ""}
+                  onChange={(e) =>
+                    handleSocialMediaChange(platform, e.target.value)
+                  }
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && handleSocialMediaSave(platform)
+                  }
+                  sx={{ fontFamily: "Poppins" }}
+                  inputProps={{
+                    style: {
+                      fontFamily: "Poppins, sans-serif",
+                    },
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: "Poppins, sans-serif",
+                    },
+                  }}
+                />
+              ) : (
+                <Button
+                  href={formatSocialLink(
+                    platform,
+                    profile.socialMedia?.[platform],
+                  )}
+                  target="_blank"
+                  sx={{ fontFamily: "Poppins" }}
+                >
+                  {profile.socialMedia?.[platform] || "Not Set"}
+                </Button>
+              )}
+              <IconButton onClick={() => handleEditToggle(platform)}>
+                {isEditing[platform] ? (
+                  loadingPlatform[platform] ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    <SaveIcon />
+                  )
+                ) : (
+                  <EditIcon />
+                )}
+              </IconButton>
+            </Box>
+          ),
+        )}
       </Box>
     </Box>
   );

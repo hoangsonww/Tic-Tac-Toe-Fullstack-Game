@@ -294,7 +294,7 @@ const LandingPage: React.FC = () => {
         >
           Get Started
         </Button>
-        <Typography variant="body1" sx={{ mt: 2, fontFamily: 'Poppins' }}>
+        <Typography variant="body1" sx={{ mt: 2, fontFamily: "Poppins" }}>
           Already have an account?{" "}
           <Link to="/login" style={{ color: themeColor }}>
             Login
