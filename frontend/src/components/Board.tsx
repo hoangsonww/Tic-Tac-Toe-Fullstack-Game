@@ -30,6 +30,7 @@ const Board: React.FC<BoardProps> = ({
 
   useEffect(() => {
     resetBoard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardSize, isAI, aiDifficulty, isTimerEnabled, timerDuration]);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const Board: React.FC<BoardProps> = ({
     } else if (isTimerEnabled && isTimerActive && timeLeft === 0) {
       handleTimeOut();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTimerEnabled, isTimerActive, timeLeft]);
 
   const handleTimeOut = () => {

@@ -149,6 +149,7 @@ const Profile: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleKeyPress = (e: React.KeyboardEvent, field: string) => {
     if (e.key === "Enter") {
       if (field in profile.socialMedia) {
