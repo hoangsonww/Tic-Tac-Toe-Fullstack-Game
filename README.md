@@ -83,6 +83,14 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 - dotenv
 - CORS Middleware
 
+### CI/CD
+
+- **GitHub Actions**: Automated workflows for linting, testing, and deployment.
+- **Jest & React Testing Library**: For unit and integration testing of React components.
+- **ESLint & Prettier**: Linting and code formatting for maintaining code quality.
+- **Jenkins**: Continuous integration and deployment for backend services.
+- **Docker & Kubernetes**: Containerization and orchestration for scalable deployments.
+
 ## **User Interface**
 
 The **Tic Tac Toe Pro Game** frontend features an intuitive and visually appealing UI, offering a seamless experience across devices. Below are placeholders for screenshots of the app:
@@ -326,7 +334,7 @@ tic-tac-toe-pro/
 ## **API Endpoints**
 
 | Endpoint                | Method | Description                                                                           |
-| ----------------------- | ------ | ------------------------------------------------------------------------------------- |
+|-------------------------|--------|---------------------------------------------------------------------------------------|
 | `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
 | `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
 | `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |
@@ -361,8 +369,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## **Author**
 
-**[Son Nguyen](https://github.com/hoangsonww)**  
-Feel free to reach out with any questions or suggestions.
+- **[Son Nguyen](https://github.com/hoangsonww)**
+- Feel free to reach out with any questions or suggestions.
 
 ---
 

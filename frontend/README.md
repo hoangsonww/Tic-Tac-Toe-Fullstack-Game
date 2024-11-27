@@ -66,6 +66,19 @@ Experience the live app here:
 - **Express.js**: Backend framework for handling API requests.
 - **MongoDB**: Database for storing user and leaderboard data.
 - **JWT Authentication**: Secure authentication for user login and registration.
+- **ELO System**: Algorithm for calculating player rankings and leaderboards.
+- **Swagger UI**: Interactive API documentation for backend endpoints.
+- **CORS**: Middleware for handling cross-origin resource sharing.
+- **bcrypt**: Library for hashing user passwords securely.
+- **body-parser**: Middleware for parsing incoming request bodies.
+
+### CI/CD
+
+- **GitHub Actions**: Automated workflows for linting, testing, and deployment.
+- **Jest & React Testing Library**: For unit and integration testing of React components.
+- **ESLint & Prettier**: Linting and code formatting for maintaining code quality.
+- **Jenkins**: Continuous integration and deployment for backend services.
+- **Docker & Kubernetes**: Containerization and orchestration for scalable deployments.
 
 ## **User Interface**
 
