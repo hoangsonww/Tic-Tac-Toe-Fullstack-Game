@@ -19,7 +19,22 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Swagger documentation route
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocs, {
+    customCss: ".swagger-ui .topbar { display: none }", // Optional: Remove the default top bar
+    customJs: "/custom-swagger-title.js", // Path to the custom script for title
+  })
+);
+
+// Serve custom JavaScript file for the title
+app.get("/custom-swagger-title.js", (req, res) => {
+  res.type("application/javascript");
+  res.send(`
+    document.title = "Tic Tac Toe Pro API Docs"; // Set the desired title
+  `);
+});
 
 // Root route redirecting to Swagger UI
 app.get("/", (req, res) => {

@@ -256,4 +256,67 @@ router.post("/ai-match", authenticate, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /leaderboard/search:
+ *   get:
+ *     summary: Search the leaderboard for a specific username
+ *     tags: [Leaderboard]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: username
+ *         schema:
+ *           type: string
+ *         description: The username to search for in the leaderboard
+ *     responses:
+ *       200:
+ *         description: Search results containing matched usernames
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   username:
+ *                     type: string
+ *                     description: Player's username
+ *                   elo:
+ *                     type: number
+ *                     description: Player's ELO rating
+ *                   totalWins:
+ *                     type: number
+ *                     description: Total number of wins
+ *                   totalLosses:
+ *                     type: number
+ *                     description: Total number of losses
+ *                   totalDraws:
+ *                     type: number
+ *                     description: Total number of draws
+ *       400:
+ *         description: Username query parameter is required
+ *       500:
+ *         description: Failed to search leaderboard
+ */
+router.get("/search", async (req, res) => {
+  const { username } = req.query;
+
+  if (!username) {
+    return res.status(400).json({ error: "Username query parameter is required." });
+  }
+
+  try {
+    const results = await LeaderboardEntry.find({
+      username: { $regex: username, $options: "i" }, // Case-insensitive partial match
+    }).sort({ elo: -1 });
+
+    res.json(results);
+  } catch (error) {
+    console.error("Error searching leaderboard:", error);
+    res.status(500).json({ error: "Failed to search leaderboard" });
+  }
+});
+
 module.exports = router;
