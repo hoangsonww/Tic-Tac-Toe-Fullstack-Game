@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   TextField,
@@ -6,6 +6,7 @@ import {
   Box,
   Typography,
   Avatar,
+  CircularProgress,
   useMediaQuery,
 } from "@mui/material";
 import { LockOutlined as LockIcon } from "@mui/icons-material";
@@ -18,34 +19,36 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (data: any) => {
-    api
-      .post("/auth/login", data)
-      .then((response) => {
-        console.log("Login successful:", response.data);
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/auth/login", data);
+      console.log("Login successful:", response.data);
 
-        // Store the token in local storage
-        localStorage.setItem("token", response.data.token);
+      // Store the token in local storage
+      localStorage.setItem("token", response.data.token);
 
-        // Store the username in local storage under TicTacToeUsername
-        localStorage.setItem("TicTacToeUsername", response.data.username);
+      // Store the username in local storage under TicTacToeUsername
+      localStorage.setItem("TicTacToeUsername", response.data.username);
 
-        // Set the token for future API requests
-        setAuthToken(response.data.token);
+      // Set the token for future API requests
+      setAuthToken(response.data.token);
 
-        // Navigate to the homepage
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Login failed:", error);
-        alert("Invalid email or password. Please try again.");
-      });
+      // Navigate to the homepage
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Invalid email or password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleKeyPress = (
     e: React.KeyboardEvent<HTMLDivElement>,
-    action: () => void,
+    action: () => void
   ) => {
     if (e.key === "Enter") {
       action();
@@ -134,14 +137,22 @@ const Login: React.FC = () => {
           color="primary"
           type="submit"
           fullWidth
+          disabled={loading}
           sx={{
             mt: 2,
             fontFamily: "Poppins",
             fontWeight: "bold",
             py: 1.5,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          Login
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: "white" }} />
+          ) : (
+            "Login"
+          )}
         </Button>
       </form>
       <Typography
