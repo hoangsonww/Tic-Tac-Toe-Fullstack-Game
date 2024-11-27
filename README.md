@@ -14,6 +14,7 @@ Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack app
 - [File Structure](#file-structure)
 - [Setup Instructions](#setup-instructions)
 - [API Endpoints](#api-endpoints)
+- [Containerization](#containerization)
 - [Contributing](#contributing)
 - [License](#license)
 - [Author](#author)
@@ -37,6 +38,16 @@ The Tic Tac Toe Pro Game is live and accessible at the following URLs:
 - **Backend**: [Tic Tac Toe Pro API](https://tic-tac-toe-fullstack-game.onrender.com/)
 
 Feel free to explore the app, play a few games, and check out the leaderboard!
+
+### Deployment Statuses
+
+![Frontend Vercel](https://img.shields.io/badge/Frontend%20Vercel-Up-brightgreen?style=flat-square&logo=vercel)
+![Backend Render](https://img.shields.io/badge/Backend%20Render-Up-brightgreen?style=flat-square&logo=render)
+![MongoDB Atlas](https://img.shields.io/badge/MongoDB%20Atlas-Connected-brightgreen?style=flat-square&logo=mongodb)
+![Deployment Docker](https://img.shields.io/badge/Deployment%20Docker-Running-brightgreen?style=flat-square&logo=docker)
+![Swagger Documentation](https://img.shields.io/badge/Swagger%20Docs-Available-brightgreen?style=flat-square&logo=swagger)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-Passing-brightgreen?style=flat-square&logo=githubactions)
+![Jenkins Pipeline](https://img.shields.io/badge/Jenkins%20Pipeline-Active-brightgreen?style=flat-square&logo=jenkins)
 
 ## **Features**
 
@@ -345,6 +356,17 @@ tic-tac-toe-pro/
 | `/leaderboard`          | GET    | Fetch the global leaderboard, sorted by ELO.                                          |
 | `/leaderboard/match`    | POST   | Report a match result between two players and update their ELO ratings.               |
 | `/leaderboard/ai-match` | POST   | Report a match result against AI and update the player's ELO rating.                  |
+
+## **Containerization**
+
+The **Tic Tac Toe Pro Game** can be containerized using Docker for easy deployment and scaling. Below are the steps to build and run the app in a Docker container:
+
+1. **Build and Run the Docker Image**:
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access the App**: Visit `http://localhost:3000` to access the frontend and `http://localhost:4000` for the backend API.
 
 ## **Contributing**
 

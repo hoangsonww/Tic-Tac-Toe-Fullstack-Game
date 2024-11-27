@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80" # Map frontend container's port 80 to localhost:3000
+    networks:
+      - tic-tac-toe-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000" # Map backend container's port 4000 to localhost:4000
+    networks:
+      - tic-tac-toe-network
+    environment:
+      MONGO_URI: mongodb://mongo:27017/tic-tac-toe
+      JWT_SECRET: your-jwt-secret
+
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    ports:
+      - "27017:27017" # Map MongoDB's default port
+    networks:
+      - tic-tac-toe-network
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  tic-tac-toe-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
