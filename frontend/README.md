@@ -295,7 +295,7 @@ Tic-Tac-Toe-Pro-Frontend/
 The frontend interacts with the following backend endpoints:
 
 | **Method** | **Endpoint**              | **Description**                     |
-|||-|
+|------------|---------------------------|-------------------------------------|
 | `POST`     | `/auth/register`          | Registers a new user.               |
 | `POST`     | `/auth/login`             | Logs in a user and returns a token. |
 | `POST`     | `/auth/forgot-password`   | Verifies the user's email.          |

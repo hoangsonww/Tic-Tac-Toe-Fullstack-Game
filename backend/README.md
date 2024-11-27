@@ -79,7 +79,7 @@ This is the backend service for the **Tic Tac Toe Pro Game**, built using **Node
 ## Environment Variables
 
 | Variable     | Description                       | Example                                                  |
-|--|--|-|
+|--------------|-----------------------------------|----------------------------------------------------------|
 | `MONGO_URI`  | MongoDB connection URI            | `mongodb+srv://username:password@cluster.mongodb.net/db` |
 | `JWT_SECRET` | Secret key for JWT authentication | `my-secret-key`                                          |
 
@@ -90,7 +90,7 @@ This is the backend service for the **Tic Tac Toe Pro Game**, built using **Node
 ### Table of Endpoints
 
 | Endpoint                | Method | Description                                                                           |
-|-|--||
+|-------------------------|--------|---------------------------------------------------------------------------------------|
 | `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
 | `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
 | `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |
@@ -101,7 +101,6 @@ This is the backend service for the **Tic Tac Toe Pro Game**, built using **Node
 | `/leaderboard`          | GET    | Fetch the global leaderboard, sorted by ELO.                                          |
 | `/leaderboard/match`    | POST   | Report a match result between two players and update their ELO ratings.               |
 | `/leaderboard/ai-match` | POST   | Report a match result against AI and update the player's ELO rating.                  |
-
 
 
 ## Swagger Documentation

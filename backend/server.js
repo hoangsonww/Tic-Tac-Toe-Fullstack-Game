@@ -15,7 +15,7 @@ const leaderboardRoutes = require("./routes/leaderboard");
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: "*" })); // Allow requests from any origin
 app.use(bodyParser.json());
 
 // Swagger documentation route
@@ -23,8 +23,8 @@ app.use(
   "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocs, {
-    customCss: "", // Use an empty string to retain the default header bar
-    customSiteTitle: "Tic Tac Toe Pro API Docs", // Set the custom site title
+    customCss: "",
+    customSiteTitle: "Tic Tac Toe Pro API Docs",
   })
 );
 

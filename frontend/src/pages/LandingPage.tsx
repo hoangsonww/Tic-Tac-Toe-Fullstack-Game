@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
         </Typography>
         <Button
           component={Link}
-          to="/register"
+          to="/home"
           variant="contained"
           sx={{
             backgroundColor: "white",
