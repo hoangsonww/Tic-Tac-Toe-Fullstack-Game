@@ -23,18 +23,10 @@ app.use(
   "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocs, {
-    customCss: ".swagger-ui .topbar { display: none }", // Optional: Remove the default top bar
-    customJs: "/custom-swagger-title.js", // Path to the custom script for title
+    customCss: "", // Use an empty string to retain the default header bar
+    customSiteTitle: "Tic Tac Toe Pro API Docs", // Set the custom site title
   })
 );
-
-// Serve custom JavaScript file for the title
-app.get("/custom-swagger-title.js", (req, res) => {
-  res.type("application/javascript");
-  res.send(`
-    document.title = "Tic Tac Toe Pro API Docs"; // Set the desired title
-  `);
-});
 
 // Root route redirecting to Swagger UI
 app.get("/", (req, res) => {
