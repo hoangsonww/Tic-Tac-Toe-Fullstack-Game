@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 
 const Footer: React.FC = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <Box
       sx={{
@@ -16,7 +18,7 @@ const Footer: React.FC = () => {
         variant="body2"
         sx={{ fontFamily: "Poppins", fontSize: "1rem" }}
       >
-        © 2024 Tic Tac Toe Pro. Created by{" "}
+        © {currentYear} Tic Tac Toe Pro. Created by{" "}
         <a
           href="https://github.com/hoangsonww"
           style={{ color: "#fff", textDecoration: "underline" }}
