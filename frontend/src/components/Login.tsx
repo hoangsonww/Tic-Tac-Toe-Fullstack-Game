@@ -71,7 +71,8 @@ const Login: React.FC = () => {
       sx={{
         maxWidth: 400,
         mx: "auto",
-        mt: 5,
+        mt: 8,
+        mb: 12,
         p: 3,
         bgcolor: "background.paper",
         borderRadius: 2,
