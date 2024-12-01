@@ -97,7 +97,11 @@ const Register: React.FC = () => {
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ fontFamily: "Poppins", fontWeight: "bold", textAlign: "center" }}
+          sx={{
+            fontFamily: "Poppins",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
         >
           Register
         </Typography>
@@ -183,7 +187,11 @@ const Register: React.FC = () => {
                           : "rgba(0, 0, 0, 0.7)",
                     }}
                   >
-                    {confirmPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                    {confirmPasswordVisible ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
                   </IconButton>
                 </InputAdornment>
               ),

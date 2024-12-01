@@ -78,26 +78,26 @@ const App: React.FC = () => {
           minHeight: "100vh", // Ensures full viewport height
         }}
       >
-        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
-          <Routes>
-            <Route path="/" element={<LandingPage/>}/>
-            <Route path="/home" element={<Home/>}/>
-            <Route path="/leaderboard" element={<Leaderboard/>}/>
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile/>
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/register" element={<Register/>}/>
-            <Route path="/forgot-password" element={<ForgotPassword/>}/>
-            <Route path="/landing" element={<LandingPage/>}/>
-            <Route path="*" element={<NotFoundPage/>}/>
-          </Routes>
-        <Footer/>
+        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+        <Footer />
       </div>
     </ThemeProvider>
   );

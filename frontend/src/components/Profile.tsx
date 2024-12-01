@@ -194,7 +194,7 @@ const Profile: React.FC = () => {
     <Box
       sx={{
         maxWidth: 450,
-        minWidth: {xs: '90%', sm: 450},
+        minWidth: { xs: "90%", sm: 450 },
         mx: "auto",
         mt: 5,
         mb: 5,

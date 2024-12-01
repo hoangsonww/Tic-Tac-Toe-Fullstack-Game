@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Container,
-} from "@mui/material";
+import { Box, Typography, Button, Container } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
