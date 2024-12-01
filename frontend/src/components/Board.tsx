@@ -120,7 +120,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:4000/leaderboard/ai-match",
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/ai-match",
         {
           method: "POST",
           headers: {
