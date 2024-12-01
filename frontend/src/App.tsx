@@ -10,6 +10,7 @@ import Register from "./components/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./components/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
+import NotFoundPage from "./pages/404Page";
 import {
   ThemeProvider,
   createTheme,
@@ -70,27 +71,34 @@ const App: React.FC = () => {
           },
         }}
       />
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-      <div style={{ minHeight: "calc(100vh - 64px - 100px)" }}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/landing" element={<LandingPage />} />
-        </Routes>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh", // Ensures full viewport height
+        }}
+      >
+        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
+          <Routes>
+            <Route path="/" element={<LandingPage/>}/>
+            <Route path="/home" element={<Home/>}/>
+            <Route path="/leaderboard" element={<Leaderboard/>}/>
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile/>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/register" element={<Register/>}/>
+            <Route path="/forgot-password" element={<ForgotPassword/>}/>
+            <Route path="/landing" element={<LandingPage/>}/>
+            <Route path="*" element={<NotFoundPage/>}/>
+          </Routes>
+        <Footer/>
       </div>
-      <Footer />
     </ThemeProvider>
   );
 };
