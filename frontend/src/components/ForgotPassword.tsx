@@ -5,7 +5,10 @@ import {
   Button,
   Typography,
   CircularProgress,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { api } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +19,8 @@ const ForgotPassword: React.FC = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [newPasswordVisible, setNewPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleVerifyEmail = async () => {
@@ -62,6 +67,14 @@ const ForgotPassword: React.FC = () => {
     if (e.key === "Enter") {
       action();
     }
+  };
+
+  const toggleNewPasswordVisibility = () => {
+    setNewPasswordVisible(!newPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
   return (
@@ -139,10 +152,19 @@ const ForgotPassword: React.FC = () => {
             label="New Password"
             fullWidth
             margin="normal"
-            type="password"
+            type={newPasswordVisible ? "text" : "password"}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             onKeyPress={(e) => handleKeyPress(e, handleResetPassword)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleNewPasswordVisibility}>
+                    {newPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             sx={{
               "& .MuiInputBase-input": {
                 fontFamily: "Poppins",
@@ -156,10 +178,23 @@ const ForgotPassword: React.FC = () => {
             label="Confirm Password"
             fullWidth
             margin="normal"
-            type="password"
+            type={confirmPasswordVisible ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             onKeyPress={(e) => handleKeyPress(e, handleResetPassword)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleConfirmPasswordVisibility}>
+                    {confirmPasswordVisible ? (
+                      <VisibilityOff />
+                    ) : (
+                      <Visibility />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             sx={{
               "& .MuiInputBase-input": {
                 fontFamily: "Poppins",

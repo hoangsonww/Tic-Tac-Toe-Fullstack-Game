@@ -7,8 +7,14 @@ import {
   Avatar,
   useMediaQuery,
   CircularProgress,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
-import { LockOutlined as LockIcon } from "@mui/icons-material";
+import {
+  LockOutlined as LockIcon,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { api } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -24,6 +30,8 @@ const Register: React.FC = () => {
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const onSubmit = async (data: any) => {
     if (password !== confirmPassword) {
@@ -52,6 +60,14 @@ const Register: React.FC = () => {
     if (e.key === "Enter") {
       action();
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
   return (
@@ -119,11 +135,28 @@ const Register: React.FC = () => {
           label="Password"
           fullWidth
           margin="normal"
-          type="password"
+          type={passwordVisible ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           required
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={togglePasswordVisibility}
+                  sx={{
+                    color:
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.7)"
+                        : "rgba(0, 0, 0, 0.7)",
+                  }}
+                >
+                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",
@@ -137,11 +170,28 @@ const Register: React.FC = () => {
           label="Confirm Password"
           fullWidth
           margin="normal"
-          type="password"
+          type={confirmPasswordVisible ? "text" : "password"}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
           required
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={toggleConfirmPasswordVisibility}
+                  sx={{
+                    color:
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.7)"
+                        : "rgba(0, 0, 0, 0.7)",
+                  }}
+                >
+                  {confirmPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",

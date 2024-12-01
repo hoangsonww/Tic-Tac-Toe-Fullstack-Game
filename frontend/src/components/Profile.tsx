@@ -273,7 +273,15 @@ const Profile: React.FC = () => {
             ) : (
               profile.dob || "N/A"
             )}
-            <IconButton onClick={() => handleEditToggle("dob")}>
+            <IconButton
+              onClick={() => {
+                if (isEditing.dob) {
+                  handleFieldSave("dob");
+                } else {
+                  handleEditToggle("dob");
+                }
+              }}
+            >
               {isEditing.dob ? (
                 savingField === "dob" ? (
                   <CircularProgress size={20} />
@@ -314,7 +322,15 @@ const Profile: React.FC = () => {
             ) : (
               profile.bio || "No bio set"
             )}
-            <IconButton onClick={() => handleEditToggle("bio")}>
+            <IconButton
+              onClick={() => {
+                if (isEditing.bio) {
+                  handleFieldSave("bio");
+                } else {
+                  handleEditToggle("bio");
+                }
+              }}
+            >
               {isEditing.bio ? (
                 savingField === "bio" ? (
                   <CircularProgress size={20} />
@@ -386,7 +402,15 @@ const Profile: React.FC = () => {
                   {profile.socialMedia?.[platform] || "Not Set"}
                 </Button>
               )}
-              <IconButton onClick={() => handleEditToggle(platform)}>
+              <IconButton
+                onClick={() => {
+                  if (isEditing[platform]) {
+                    handleSocialMediaSave(platform);
+                  } else {
+                    handleEditToggle(platform);
+                  }
+                }}
+              >
                 {isEditing[platform] ? (
                   loadingPlatform[platform] ? (
                     <CircularProgress size={20} />

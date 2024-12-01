@@ -342,4 +342,43 @@ router.get("/search", async (req, res) => {
   }
 });
 
+/**
+ * Calculate new ELO based on the result and difficulty
+ * @param {number} playerElo - Current ELO of the player
+ * @param {number} opponentElo - Current ELO of the opponent (can be same as player's ELO)
+ * @param {string} result - Result of the match ("win", "loss", "draw")
+ * @param {string} difficulty - Difficulty of the match ("easy", "medium", "hard", "impossible")
+ * @returns {number} New ELO
+ */
+const calculateElo = (playerElo, opponentElo, result, difficulty) => {
+  // Define ELO changes for each combination
+  const eloChanges = {
+    easy: { win: +10, draw: -5, loss: -20 },
+    medium: { win: +20, draw: -10, loss: -15 },
+    hard: { win: +30, draw: +5, loss: -10 },
+    impossible: { win: +40, draw: +10, loss: -5 },
+  };
+
+  // Get the ELO change based on difficulty and result
+  const difficultyKey = difficulty.toLowerCase();
+  const resultKey = result.toLowerCase();
+
+  // Default to medium difficulty if invalid
+  const eloChangeByDifficulty =
+    eloChanges[difficultyKey] || eloChanges["medium"];
+  // Default to zero ELO change if invalid result
+  const eloChange = eloChangeByDifficulty[resultKey];
+
+  if (eloChange === undefined) {
+    // If result is invalid, default to no ELO change
+    return playerElo;
+  }
+
+  // Calculate new ELO
+  const newElo = playerElo + eloChange;
+
+  // Ensure ELO doesn't drop below 0
+  return Math.max(0, newElo);
+};
+
 module.exports = router;

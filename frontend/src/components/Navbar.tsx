@@ -275,7 +275,7 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
                   color="primary"
                 />
               }
-              label={isDarkMode ? "Light Mode" : "Dark Mode"}
+              label={isDarkMode ? "Dark Mode" : "Light Mode"}
               sx={{ fontFamily: "Poppins, sans-serif", ml: -1 }}
             />
           </ListItem>

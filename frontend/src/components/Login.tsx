@@ -7,9 +7,15 @@ import {
   Typography,
   Avatar,
   CircularProgress,
+  IconButton,
+  InputAdornment,
   useMediaQuery,
 } from "@mui/material";
-import { LockOutlined as LockIcon } from "@mui/icons-material";
+import {
+  LockOutlined as LockIcon,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { api, setAuthToken } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -20,6 +26,7 @@ const Login: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -53,6 +60,10 @@ const Login: React.FC = () => {
     if (e.key === "Enter") {
       action();
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -120,9 +131,26 @@ const Login: React.FC = () => {
           label="Password"
           fullWidth
           margin="normal"
-          type="password"
+          type={passwordVisible ? "text" : "password"}
           required
           onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={togglePasswordVisibility}
+                  sx={{
+                    color:
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.7)"
+                        : "rgba(0, 0, 0, 0.7)",
+                  }}
+                >
+                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           sx={{
             "& .MuiInputBase-input": {
               fontFamily: "Poppins",
