@@ -188,6 +188,12 @@ const Leaderboard: React.FC = () => {
                       fontFamily: "Poppins",
                       fontWeight: 600,
                       fontSize: "1.1rem",
+                      sx: {
+                        maxWidth: "200px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      },
                     }}
                     secondaryTypographyProps={{
                       fontFamily: "Poppins, sans-serif",
