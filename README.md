@@ -23,9 +23,9 @@ Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack app
 
 The **Tic Tac Toe Pro Game** offers a modern and engaging experience for players to:
 
-- Compete in multiplayer matches or against an AI.
-- Track their performance on a global leaderboard.
-- Manage their profiles with personalized information and social links.
+- Compete in multiplayer matches (online PvP or local PvP on your machine) or against an AI trainer.
+- Track their performance on a global leaderboard (using a comprehensive ELO system).
+- Manage their profiles with personalized information and social links, along with profile search system.
 - Enjoy a seamless UI with light and dark modes.
 
 The app integrates a robust backend API with a dynamic frontend, providing real-time updates and ensuring data security with JWT authentication.
@@ -40,7 +40,7 @@ The Tic Tac Toe Pro Game is live and accessible at the following URLs:
 
 Feel free to explore the app, play a few games, and check out the leaderboard!
 
-> Note: The app's backend is hosted on Render's free tier, which may experience cold start delays. It may take up to 2 seconds to process backend requests, such as login, registration, or leaderboard functionalities. Please be patient if you encounter any initial delays.
+> **Note**: The app's backend is hosted on Render's free tier, which may experience cold start delays. It may take up to 2 seconds to process backend requests, such as login, registration, online PvP, and/or leaderboard functionalities. Please be patient if you encounter any initial delays.
 
 ### Deployment Statuses
 
@@ -57,7 +57,8 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 
 ### **Frontend**
 
-- **Dynamic Gameplay**: Play against friends or AI with varying difficulty levels.
+- **Dynamic Gameplay**: Play against friends locally on your own device or AI with varying difficulty levels.
+- **Online PvP**: Compete in real-time multiplayer matches against players worldwide with matchmaking support.
 - **Leaderboard**: View top-ranked players and search for specific users.
 - **Profile Management**: Update your profile with a bio, social media links, and more.
 - **Responsive Design**: Optimized for mobile, tablet, and desktop screens.
@@ -69,6 +70,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 - **ELO System**: Dynamic player rankings based on game results and difficulty.
 - **Swagger Documentation**: Interactive API documentation for developers.
 - **Game Stats**: Record game results and track wins, losses, and draws.
+- **Socket.io Integration**: Real-time updates for multiplayer matches and AI moves.
 
 ### **AI Integration**
 
@@ -93,6 +95,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 - Express.js
 - MongoDB
 - Mongoose ODM
+- Socket.io
 - JWT Authentication
 - Swagger UI
 - dotenv
@@ -150,12 +153,66 @@ The game page features a responsive game board with real-time updates for player
   <img src="images/gameplay.png" alt="Game Play" width="100%" style="border-radius: 8px">
 </p>
 
-#### Game Settings
+#### Player vs AI Mode
 
-Here, the user can select the game mode (AI or Multiplayer) and the AI difficulty level. They can also toggle the timer mode, as well as board size.
+The game page allows users to play against an AI opponent with varying difficulty levels (easy, medium, hard).
 
 <p align="center">
-  <img src="images/game-settings.png" alt="Game Settings" width="100%" style="border-radius: 8px">
+  <img src="images/ai.png" alt="Player vs AI Mode" width="100%" style="border-radius: 8px">
+</p>
+
+<p align="center">
+  <img src="images/ai-dark.png" alt="AI Difficulty Levels" width="100%" style="border-radius: 8px">
+</p>
+
+#### Local Player vs. Player Mode
+
+The game page also allows users to play against friends locally on the same device.
+
+<p align="center">
+  <img src="images/local.png" alt="Local Player vs. Player Mode" width="100%" style="border-radius: 8px">
+</p>
+
+<p align="center">
+  <img src="images/local-dark.png" alt="Local Player vs. Player Mode (Dark Mode)" width="100%" style="border-radius: 8px">
+</p>
+
+**Example of multiple board sizes**: 8x8
+
+<p align="center">
+  <img src="images/8x8.png" alt="8x8 Board Size" width="100%" style="border-radius: 8px">
+</p>
+
+#### Online Player vs. Player Mode
+
+The game page also enables users to play against other players online in real-time matches.
+
+**Pre-Matchmaking**
+
+<p align="center">
+  <img src="images/pre-matchmaking.png" alt="Online Player vs. Player Mode" width="100%" style="border-radius: 8px">
+</p>
+
+**Matchmaking in Progress (Finding Opponent)**
+
+<p align="center">
+  <img src="images/matchmaking-in-progress.png" alt="Online Player vs. Player Mode" width="100%" style="border-radius: 8px">
+</p>
+
+**Matchmaking Success (Found Opponent)**
+
+<p align="center">
+  <img src="images/match-found.png" alt="Online Player vs. Player Mode" width="100%" style="border-radius: 8px">
+</p>
+
+**Game in Progress (Online Match)**
+
+<p align="center">
+  <img src="images/online.png" alt="Online Player vs. Player Mode" width="100%" style="border-radius: 8px">
+</p>
+
+<p align="center">
+  <img src="images/online-dark.png" alt="Online Player vs. Player Mode (Dark Mode)" width="100%" style="border-radius: 8px">
 </p>
 
 ### Leaderboard Page
@@ -188,6 +245,14 @@ The profile page allows users to view and update their profile information, incl
 
 <p align="center">
   <img src="images/profile-dark.png" alt="Profile Page (Dark Mode)" width="100%" style="border-radius: 8px">
+</p>
+
+#### Profile Search
+
+The profile page also features a search bar to find other users by their username.
+
+<p align="center">
+  <img src="images/profile-search.png" alt="Profile Search" width="100%" style="border-radius: 8px">
 </p>
 
 ### Login Page
@@ -262,6 +327,7 @@ The mobile drawer allows users to navigate between pages and access their profil
 tic-tac-toe-pro/
 ├── backend/
 │   ├── models/
+│   │   ├── Match.js
 │   │   ├── User.js
 │   │   ├── LeaderboardEntry.js
 │   ├── routes/
@@ -337,18 +403,75 @@ tic-tac-toe-pro/
 
 ## **API Endpoints**
 
-| Endpoint                | Method | Description                                                                           |
-| ----------------------- | ------ | ------------------------------------------------------------------------------------- |
-| `/auth/register`        | POST   | Register a new user with email, password, and username.                               |
-| `/auth/login`           | POST   | Login a user and generate a JWT token.                                                |
-| `/auth/forgot-password` | POST   | Verify if a user with the given email exists.                                         |
-| `/auth/reset-password`  | POST   | Reset the password for a user.                                                        |
-| `/profile`              | GET    | Fetch the authenticated user's profile.                                               |
-| `/profile`              | PUT    | Update the authenticated user's profile (bio, date of birth, and social media links). |
-| `/profile/games`        | PUT    | Increment the number of games played by the user.                                     |
-| `/leaderboard`          | GET    | Fetch the global leaderboard, sorted by ELO.                                          |
-| `/leaderboard/match`    | POST   | Report a match result between two players and update their ELO ratings.               |
-| `/leaderboard/ai-match` | POST   | Report a match result against AI and update the player's ELO rating.                  |
+| Endpoint                          | Method | Description                                                                           |
+| --------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| `/auth/register`                  | POST   | Register a new user with email, password, and username.                               |
+| `/auth/login`                     | POST   | Login a user and generate a JWT token.                                                |
+| `/auth/forgot-password`           | POST   | Verify if a user with the given email exists.                                         |
+| `/auth/reset-password`            | POST   | Reset the password for a user.                                                        |
+| `/profile`                        | GET    | Fetch the authenticated user's profile.                                               |
+| `/profile`                        | PUT    | Update the authenticated user's profile (bio, date of birth, and social media links). |
+| `/profile/games`                  | PUT    | Increment the number of games played by the user.                                     |
+| `/profile/search`                 | GET    | Search for a user by username.                                                        |
+| `/leaderboard`                    | GET    | Fetch the global leaderboard, sorted by ELO.                                          |
+| `/leaderboard/match`              | POST   | Report a match result between two players and update their ELO ratings.               |
+| `/leaderboard/ai-match`           | POST   | Report a match result against AI and update the player's ELO rating.                  |
+| `/leaderboard/search`             | GET    | Search for a user in the leaderboard by username.                                     |
+| `/leaderboard/matchmaking`        | POST   | Put the player in matchmaking mode to find an online opponent.                        |
+| `/leaderboard/match/move`         | POST   | Report a move in an online match and update the game state.                           |
+| `/leaderboard/match/finish`       | POST   | Finish an online match and update the game result.                                    |
+| `/leaderboard/matchmaking/status` | GET    | Check the status of the player's matchmaking request.                                 |
+| `/leaderboard/match/timeout`      | POST   | Handle a timeout in an online match and update the game result.                       |
+| `/leaderboard/match/state`        | GET    | Fetch the current game state for an online match.                                     |
+| `/leaderboard/matchmaking/cancel` | POST   | Cancel the player's matchmaking request.                                              |
+
+### **Database Schemas**
+
+#### **User Schema**
+
+| Field            | Type   | Description                         |
+| ---------------- | ------ | ----------------------------------- |
+| `email`          | String | User's email address.               |
+| `username`       | String | User's display name.                |
+| `password`       | String | User's hashed password.             |
+| `elo`            | Number | User's ELO rating.                  |
+| `bio`            | String | User's profile bio.                 |
+| `dob`            | String | User's date of birth.               |
+| `gamesPlayed`    | Number | Number of games played by the user. |
+| `profilePicture` | String | URL of the user's profile picture.  |
+| `socialMedia`    | Object | User's social media links.          |
+
+#### **Leaderboard Entry Schema**
+
+| Field         | Type   | Description                     |
+| ------------- | ------ | ------------------------------- |
+| `username`    | String | Player's username.              |
+| `elo`         | Number | Player's ELO rating.            |
+| `totalWins`   | Number | Number of wins by the player.   |
+| `totalLosses` | Number | Number of losses by the player. |
+| `totalDraws`  | Number | Number of draws by the player.  |
+
+##### **Match Schema**
+
+| Field          | Type   | Description                                    |
+| -------------- | ------ | ---------------------------------------------- |
+| `player`       | String | Player's username.                             |
+| `opponent`     | String | Opponent's username.                           |
+| `status`       | Object | Match status (waiting, in-progress, finished). |
+| `moves`        | Array  | Array of moves in the match.                   |
+| `winner`       | String | Winner of the match.                           |
+| `createdAt`    | Date   | Match creation timestamp.                      |
+| `lastMoveTime` | Date   | Last move timestamp.                           |
+
+### **API Documentation**
+
+The backend API is documented using Swagger UI, providing an interactive interface to explore the available endpoints and test requests.
+
+Here is the Swagger UI for the **Tic Tac Toe Pro Game**:
+
+<p align="center">
+  <img src="images/api-docs.png" alt="Swagger UI" width="100%" style="border-radius: 8px">
+</p>
 
 ## **Setup Instructions**
 

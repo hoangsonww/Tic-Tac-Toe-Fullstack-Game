@@ -39,7 +39,7 @@ const Register: React.FC = () => {
       return;
     }
     setLoading(true);
-    setError(""); // Clear previous errors
+    setError("");
     try {
       await api.post("/auth/register", { ...data, password });
       navigate("/login");
@@ -69,7 +69,7 @@ const Register: React.FC = () => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "calc(100vh - 64px - 100px)", // Adjust for Navbar and Footer heights
+        minHeight: "calc(100vh - 64px - 100px)",
         textAlign: "center",
       }}
     >

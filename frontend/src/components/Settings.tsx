@@ -5,11 +5,16 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Switch,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextField,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Typography,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Button,
   useMediaQuery,
+  Tooltip,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Switch,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
 import { useTheme } from "@mui/system";
@@ -17,8 +22,8 @@ import { useTheme } from "@mui/system";
 interface SettingsProps {
   boardSize: number;
   setBoardSize: (size: number) => void;
-  isAI: boolean;
-  setIsAI: (isAI: boolean) => void;
+  gameMode: "ai" | "local" | "online";
+  setGameMode: (mode: "ai" | "local" | "online") => void;
   aiDifficulty: "easy" | "medium" | "hard" | "impossible";
   setAIDifficulty: (
     difficulty: "easy" | "medium" | "hard" | "impossible",
@@ -32,18 +37,20 @@ interface SettingsProps {
 const Settings: React.FC<SettingsProps> = ({
   boardSize,
   setBoardSize,
-  isAI,
-  setIsAI,
+  gameMode,
+  setGameMode,
   aiDifficulty,
   setAIDifficulty,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isTimerEnabled,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setIsTimerEnabled,
   timerDuration,
   setTimerDuration,
 }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [inputTimer, setInputTimer] = useState(timerDuration);
 
   const handleBoardSizeChange = (event: SelectChangeEvent<number>) => {
@@ -53,10 +60,17 @@ const Settings: React.FC<SettingsProps> = ({
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSetTimer = () => {
     if (inputTimer >= 10 && inputTimer <= 300) {
       setTimerDuration(inputTimer);
     }
+  };
+
+  const handleGameModeChange = (
+    event: SelectChangeEvent<"ai" | "local" | "online">,
+  ) => {
+    setGameMode(event.target.value as "ai" | "local" | "online");
   };
 
   const boardSizeOptions = [
@@ -67,6 +81,8 @@ const Settings: React.FC<SettingsProps> = ({
     { value: 7, label: "7 x 7" },
     { value: 8, label: "8 x 8" },
   ];
+
+  const isOnlineMode = gameMode === "online";
 
   return (
     <Box
@@ -80,17 +96,53 @@ const Settings: React.FC<SettingsProps> = ({
         alignItems: "center",
       }}
     >
+      {/* Game Mode Settings */}
+      <FormControl sx={{ minWidth: 200 }}>
+        <InputLabel id="game-mode-label" sx={{ fontFamily: "Poppins" }}>
+          Game Mode
+        </InputLabel>
+        <Select
+          labelId="game-mode-label"
+          value={gameMode}
+          onChange={handleGameModeChange}
+          label="Game Mode"
+          variant="outlined"
+          sx={{
+            fontFamily: "Poppins",
+            ".MuiOutlinedInput-notchedOutline": {
+              borderColor:
+                theme.palette.mode === "dark" ? "#ffffff" : "#000000",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor:
+                theme.palette.mode === "dark" ? "#ffffff" : "#000000",
+            },
+            ".MuiSvgIcon-root": {
+              color: theme.palette.mode === "dark" ? "#ffffff" : "#000000",
+            },
+          }}
+        >
+          <MenuItem value="ai" sx={{ fontFamily: "Poppins" }}>
+            Play Against AI
+          </MenuItem>
+          <MenuItem value="local" sx={{ fontFamily: "Poppins" }}>
+            Play Locally
+          </MenuItem>
+          <MenuItem value="online" sx={{ fontFamily: "Poppins" }}>
+            Play Online
+          </MenuItem>
+        </Select>
+      </FormControl>
+
       {/* Board Size Settings */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: isSmallScreen ? "column" : "row",
-          alignItems: "center",
-          gap: 2,
-          mt: 0,
-        }}
+      <Tooltip
+        title={
+          isOnlineMode
+            ? "Board size is fixed at 4x4 in online mode."
+            : "Choose a board size for the game."
+        }
       >
-        <FormControl sx={{ minWidth: 200 }}>
+        <FormControl sx={{ minWidth: 200 }} disabled={isOnlineMode}>
           <InputLabel id="board-size-label" sx={{ fontFamily: "Poppins" }}>
             Board Size
           </InputLabel>
@@ -103,13 +155,15 @@ const Settings: React.FC<SettingsProps> = ({
             sx={{
               fontFamily: "Poppins",
               ".MuiOutlinedInput-notchedOutline": {
-                borderColor: "#000000",
+                borderColor:
+                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
               },
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#000000",
+                borderColor:
+                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
               },
               ".MuiSvgIcon-root": {
-                color: "#000000",
+                color: theme.palette.mode === "dark" ? "#ffffff" : "#000000",
               },
             }}
           >
@@ -124,22 +178,10 @@ const Settings: React.FC<SettingsProps> = ({
             ))}
           </Select>
         </FormControl>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body1" sx={{ fontFamily: "Poppins" }}>
-            Play Against AI
-          </Typography>
-          <Switch checked={isAI} onChange={(e) => setIsAI(e.target.checked)} />
-        </Box>
-      </Box>
+      </Tooltip>
 
       {/* AI Difficulty Settings */}
-      {isAI && (
+      {gameMode === "ai" && (
         <FormControl sx={{ minWidth: 200 }}>
           <InputLabel
             id="ai-difficulty-label"
@@ -158,13 +200,15 @@ const Settings: React.FC<SettingsProps> = ({
             sx={{
               fontFamily: "Poppins",
               ".MuiOutlinedInput-notchedOutline": {
-                borderColor: "#000000",
+                borderColor:
+                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
               },
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#000000",
+                borderColor:
+                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
               },
               ".MuiSvgIcon-root": {
-                color: "#000000",
+                color: theme.palette.mode === "dark" ? "#ffffff" : "#000000",
               },
             }}
           >
@@ -193,59 +237,72 @@ const Settings: React.FC<SettingsProps> = ({
           gap: 2,
         }}
       >
-        <Typography
-          variant="body1"
-          sx={{
-            fontFamily: "Poppins",
-          }}
-        >
-          Enable Timer
-        </Typography>
-        <Switch
-          checked={isTimerEnabled}
-          onChange={(e) => setIsTimerEnabled(e.target.checked)}
-        />
-        {isTimerEnabled && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: isSmallScreen ? "column" : "row",
-              gap: 2,
-              alignItems: "center",
-            }}
-          >
-            <TextField
-              label="Timer (seconds)"
-              type="number"
-              value={inputTimer}
-              onChange={(e) => setInputTimer(Number(e.target.value))}
-              inputProps={{
-                min: 10,
-                max: 300,
-                style: {
-                  fontFamily: "Poppins, sans-serif",
-                },
-              }}
-              InputLabelProps={{
-                style: {
-                  fontFamily: "Poppins, sans-serif",
-                },
-              }}
-              sx={{
-                fontFamily: "Poppins",
-                width: isSmallScreen ? "100%" : 200,
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSetTimer}
-              sx={{ fontFamily: "Poppins" }}
-            >
-              Set Timer
-            </Button>
-          </Box>
-        )}
+        {/*<Tooltip*/}
+        {/*  title={*/}
+        {/*    isOnlineMode*/}
+        {/*      ? "Timer is disabled in online mode."*/}
+        {/*      : "Enable or disable the timer for the game."*/}
+        {/*  }*/}
+        {/*>*/}
+        {/*  <Box*/}
+        {/*    sx={{*/}
+        {/*      display: "flex",*/}
+        {/*      alignItems: "center",*/}
+        {/*      gap: 1,*/}
+        {/*      opacity: isOnlineMode ? 0.5 : 1,*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <Typography variant="body1" sx={{ fontFamily: "Poppins" }}>*/}
+        {/*      Enable Timer*/}
+        {/*    </Typography>*/}
+        {/*    <Switch*/}
+        {/*      checked={isTimerEnabled}*/}
+        {/*      onChange={(e) => setIsTimerEnabled(e.target.checked)}*/}
+        {/*      disabled={isOnlineMode}*/}
+        {/*    />*/}
+        {/*  </Box>*/}
+        {/*</Tooltip>*/}
+        {/*{isTimerEnabled && !isOnlineMode && (*/}
+        {/*  <Box*/}
+        {/*    sx={{*/}
+        {/*      display: "flex",*/}
+        {/*      flexDirection: isSmallScreen ? "column" : "row",*/}
+        {/*      gap: 2,*/}
+        {/*      alignItems: "center",*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <TextField*/}
+        {/*      label="Timer (seconds)"*/}
+        {/*      type="number"*/}
+        {/*      value={inputTimer}*/}
+        {/*      onChange={(e) => setInputTimer(Number(e.target.value))}*/}
+        {/*      inputProps={{*/}
+        {/*        min: 10,*/}
+        {/*        max: 300,*/}
+        {/*        style: {*/}
+        {/*          fontFamily: "Poppins, sans-serif",*/}
+        {/*        },*/}
+        {/*      }}*/}
+        {/*      InputLabelProps={{*/}
+        {/*        style: {*/}
+        {/*          fontFamily: "Poppins, sans-serif",*/}
+        {/*        },*/}
+        {/*      }}*/}
+        {/*      sx={{*/}
+        {/*        fontFamily: "Poppins",*/}
+        {/*        width: isSmallScreen ? "100%" : 200,*/}
+        {/*      }}*/}
+        {/*    />*/}
+        {/*    <Button*/}
+        {/*      variant="contained"*/}
+        {/*      color="primary"*/}
+        {/*      onClick={handleSetTimer}*/}
+        {/*      sx={{ fontFamily: "Poppins" }}*/}
+        {/*    >*/}
+        {/*      Set Timer*/}
+        {/*    </Button>*/}
+        {/*  </Box>*/}
+        {/*)}*/}
       </Box>
     </Box>
   );

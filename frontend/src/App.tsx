@@ -21,13 +21,13 @@ import {
 const App: React.FC = () => {
   const [isDarkMode, setDarkMode] = useState<boolean>(() => {
     const savedPreference = localStorage.getItem("isDarkMode");
-    return savedPreference ? JSON.parse(savedPreference) : false; // Default to light mode
+    return savedPreference ? JSON.parse(savedPreference) : false;
   });
 
   const toggleTheme = () => {
     setDarkMode((prevMode) => {
       const newMode = !prevMode;
-      localStorage.setItem("isDarkMode", JSON.stringify(newMode)); // Save to localStorage
+      localStorage.setItem("isDarkMode", JSON.stringify(newMode));
       return newMode;
     });
   };
@@ -75,7 +75,7 @@ const App: React.FC = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh", // Ensures full viewport height
+          minHeight: "100vh",
         }}
       >
         <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />

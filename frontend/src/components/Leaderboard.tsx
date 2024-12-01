@@ -23,8 +23,8 @@ import {
 const Leaderboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [filteredLeaderboard, setFilteredLeaderboard] = useState([]);
-  const [loading, setLoading] = useState(true); // Initial loading state
-  const [searchLoading, setSearchLoading] = useState(false); // Loading state for search
+  const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [search, setSearch] = useState("");
 
   const debounceTimeout = useRef<number | null>(null);
@@ -189,15 +189,20 @@ const Leaderboard: React.FC = () => {
                       fontWeight: 600,
                       fontSize: "1.1rem",
                       sx: {
-                        maxWidth: "250px",
-                        whiteSpace: "nowrap",
                         overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        wordBreak: "break-word",
+                        whiteSpace: "normal",
                       },
                     }}
                     secondaryTypographyProps={{
                       fontFamily: "Poppins, sans-serif",
                       color: "gray",
+                      fontSize: "0.9rem",
+                      sx: {
+                        overflow: "hidden",
+                        wordBreak: "break-word",
+                        whiteSpace: "normal",
+                      },
                     }}
                   />
                 </Box>

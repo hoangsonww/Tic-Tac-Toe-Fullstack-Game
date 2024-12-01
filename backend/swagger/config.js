@@ -12,6 +12,7 @@ const swaggerOptions = {
         url: "https://github.com/hoangsonww",
         email: "hoangson091104@gmail.com",
       },
+      termsOfService: "https://tictactoe-ai-app.vercel.app",
     },
     servers: [
       {

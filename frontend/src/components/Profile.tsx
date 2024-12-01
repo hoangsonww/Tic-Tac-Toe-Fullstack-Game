@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Avatar,
   Button,
+  InputAdornment,
 } from "@mui/material";
 import {
   GitHub,
@@ -20,6 +21,7 @@ import {
   SportsEsports,
   Cake,
   Info,
+  Search,
 } from "@mui/icons-material";
 import { api } from "../utils/api";
 
@@ -32,8 +34,39 @@ const Profile: React.FC = () => {
   const [loadingPlatform, setLoadingPlatform] = useState<{
     [key: string]: boolean;
   }>({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [currentUserUsername, setCurrentUserUsername] = useState("");
+  const [isCurrentUser, setIsCurrentUser] = useState(true);
 
-  // Fetch profile data
+  const defaultAvatars = [
+    "/OIP.jpg",
+    "/OIP2.webp",
+    "/OIP3.png",
+    "/OIP4.png",
+    "/OIP5.png",
+    "/OIP6.webp",
+    "/OIP7.webp",
+    "/OIP8.webp",
+    "/OIP9.webp",
+    "/OIP10.webp",
+    "/OIP11.webp",
+    "/OIP12.webp",
+    "/OIP13.webp",
+    "/OIP14.webp",
+    "/OIP15.webp",
+    "/OIP16.webp",
+    "/OIP17.webp",
+    "/OIP18.webp",
+    "/OIP19.webp",
+    "/OIP20.webp",
+  ];
+  const [currentDefaultAvatar, setCurrentDefaultAvatar] = useState<string>(
+    defaultAvatars[0],
+  );
+  const lastDefaultAvatarIndexRef = useRef<number | null>(null);
+
+  // Fetch current user's username on mount
   useEffect(() => {
     api
       .get("/profile", {
@@ -42,15 +75,85 @@ const Profile: React.FC = () => {
         },
       })
       .then((response) => {
-        setProfile(response.data);
-        setError(""); // Clear previous errors
+        setCurrentUserUsername(response.data.username);
       })
       .catch((error) => {
-        console.error("Failed to fetch profile:", error);
-        setError("Failed to load profile data.");
-      })
-      .finally(() => setLoading(false));
+        console.error("Failed to fetch current user's username:", error);
+      });
   }, []);
+
+  // Fetch profile data based on searchQuery, with debounce of 500ms
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setLoading(true);
+      setError("");
+
+      let endpoint = "/profile";
+      const headers = {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      };
+
+      if (searchQuery.trim() !== "") {
+        endpoint = `/profile/search?username=${encodeURIComponent(
+          searchQuery.trim(),
+        )}`;
+      }
+
+      api
+        .get(endpoint, {
+          headers,
+        })
+        .then((response) => {
+          setProfile(response.data);
+          setError("");
+
+          if (searchQuery.trim() === "") {
+            setIsCurrentUser(true);
+          } else {
+            setIsCurrentUser(response.data.username === currentUserUsername);
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch profile:", error);
+          if (error.response && error.response.status === 404) {
+            setError("User not found.");
+          } else {
+            setError("Failed to load profile data.");
+          }
+          setProfile(null);
+        })
+        .finally(() => setLoading(false));
+    }, 500);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [searchQuery, currentUserUsername]);
+
+  // Update default avatar when profile changes
+  useEffect(() => {
+    if (!profile || profile.profilePicture) {
+      // If profile is null or profilePicture is set, no need to update default avatar
+      return;
+    }
+
+    let newIndex = Math.floor(Math.random() * defaultAvatars.length);
+
+    // Ensure newIndex is not the same as lastDefaultAvatarIndexRef.current
+    while (newIndex === lastDefaultAvatarIndexRef.current) {
+      newIndex = Math.floor(Math.random() * defaultAvatars.length);
+    }
+
+    lastDefaultAvatarIndexRef.current = newIndex;
+    setCurrentDefaultAvatar(defaultAvatars[newIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
 
   // Toggle edit mode for a specific field
   const handleEditToggle = (field: string) => {
@@ -68,6 +171,18 @@ const Profile: React.FC = () => {
     setError("");
 
     try {
+      if (field === "dob") {
+        const minDate = new Date("1900-01-01");
+        const maxDate = new Date();
+        const selectedDate = new Date(profile.dob);
+
+        if (selectedDate < minDate || selectedDate > maxDate) {
+          alert("Date of Birth must be between January 1, 1900, and today.");
+          setSavingField(null); // Reset the saving state
+          return; // Do not proceed with saving
+        }
+      }
+
       const dataToUpdate: Partial<typeof profile> = {};
 
       if (field === "dob" || field === "bio") {
@@ -89,7 +204,7 @@ const Profile: React.FC = () => {
       });
 
       alert(`${field.toUpperCase()} updated successfully!`);
-      setIsEditing((prev) => ({ ...prev, [field]: false })); // Close edit mode
+      setIsEditing((prev) => ({ ...prev, [field]: false }));
     } catch (err) {
       console.error(`Failed to update ${field}:`, err);
       setError(`Failed to update ${field}. Please try again.`);
@@ -113,7 +228,7 @@ const Profile: React.FC = () => {
     const match = url.match(
       /(?:https?:\/\/)?(?:www\.)?(?:github\.com|linkedin\.com\/in|facebook\.com|instagram\.com|twitter\.com|x\.com)\/([\w-]+)/i,
     );
-    return match ? match[1] : url; // Return the username if matched, else return the input
+    return match ? match[1] : url;
   };
 
   const handleSocialMediaChange = (platform: string, value: string) => {
@@ -145,14 +260,19 @@ const Profile: React.FC = () => {
       });
 
       alert(
-        `${platform.charAt(0).toUpperCase() + platform.slice(1)} updated successfully!`,
+        `${
+          platform.charAt(0).toUpperCase() + platform.slice(1)
+        } updated successfully!`,
       );
-      setIsEditing((prev) => ({ ...prev, [platform]: false })); // Close edit mode
+      setIsEditing((prev) => ({ ...prev, [platform]: false }));
     } catch (err) {
       console.error(`Failed to update ${platform}:`, err);
       setError(`Failed to update ${platform}. Please try again.`);
     } finally {
-      setLoadingPlatform((prevState) => ({ ...prevState, [platform]: false }));
+      setLoadingPlatform((prevState) => ({
+        ...prevState,
+        [platform]: false,
+      }));
     }
   };
 
@@ -180,252 +300,332 @@ const Profile: React.FC = () => {
     );
   }
 
-  if (!profile) {
-    return (
-      <Box textAlign="center" mt={5}>
-        <Typography variant="h6" color="error" sx={{ fontFamily: "Poppins" }}>
-          Unable to load profile data.
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
-    <Box
-      sx={{
-        maxWidth: 450,
-        minWidth: { xs: "90%", sm: 450 },
-        mx: "auto",
-        mt: 5,
-        mb: 5,
-        p: 3,
-        bgcolor: "background.paper",
-        borderRadius: 2,
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-        textAlign: "center",
-        transition: "transform 0.3s, box-shadow 0.3s",
-        "&:hover": {
-          transform: "translateY(-5px)",
-          boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
-        },
-      }}
-    >
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ fontFamily: "Poppins", textAlign: "center", fontWeight: "bold" }}
+    <Box sx={{ mt: 5, mb: 5 }}>
+      {/* Search Field */}
+      <Box
+        sx={{
+          maxWidth: 450,
+          minWidth: { xs: "90%", sm: 450 },
+          mx: "auto",
+          mb: 3,
+        }}
       >
-        User Profile
-      </Typography>
-      <Box display="flex" justifyContent="center" mb={3}>
-        <Avatar
-          src={profile.profilePicture || "/OIP.jpg"}
-          alt={profile.username || "User"}
-          sx={{ width: 120, height: 120, border: "3px solid #1976d2" }}
+        <TextField
+          label="Search for Players"
+          fullWidth
+          margin="normal"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            "& .MuiInputBase-input": {
+              fontFamily: "Poppins",
+            },
+            "& .MuiInputLabel-root": {
+              fontFamily: "Poppins",
+            },
+          }}
         />
       </Box>
-      <Box>
-        {error && (
-          <Typography
-            color="error"
-            mb={2}
-            textAlign="center"
-            sx={{ fontFamily: "Poppins" }}
-          >
+
+      {error ? (
+        <Box textAlign="center">
+          <Typography variant="h6" color="error" sx={{ fontFamily: "Poppins" }}>
             {error}
           </Typography>
-        )}
-        <Box mb={2} display="flex" alignItems="center" justifyContent="center">
-          <AccountCircle sx={{ mr: 1, color: "#1976d2" }} />
-          <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
-            <strong>Username:</strong> {profile.username}
-          </Typography>
         </Box>
-        <Box mb={2} display="flex" alignItems="center" justifyContent="center">
-          <SportsEsports sx={{ mr: 1, color: "#1976d2" }} />
-          <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
-            <strong>ELO:</strong> {profile.elo || "N/A"}
-          </Typography>
-        </Box>
-        <Box mb={2} display="flex" alignItems="center" justifyContent="center">
-          <Cake sx={{ mr: 1, color: "#1976d2" }} />
-          <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
-            <strong>Date of Birth:</strong>{" "}
-            {isEditing.dob ? (
-              <TextField
-                fullWidth
-                type="date"
-                label="Date of Birth"
-                value={profile.dob || ""}
-                onChange={(e) => handleProfileChange("dob", e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleFieldSave("dob")}
-                sx={{ fontFamily: "Poppins" }}
-                inputProps={{
-                  style: {
-                    fontFamily: "Poppins, sans-serif",
-                  },
-                }}
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "Poppins, sans-serif",
-                  },
-                }}
-              />
-            ) : (
-              profile.dob || "N/A"
-            )}
-            <IconButton
-              onClick={() => {
-                if (isEditing.dob) {
-                  handleFieldSave("dob");
-                } else {
-                  handleEditToggle("dob");
-                }
+      ) : (
+        profile && (
+          <Box
+            sx={{
+              maxWidth: 450,
+              minWidth: { xs: "90%", sm: 450 },
+              mx: "auto",
+              p: 3,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              textAlign: "center",
+              transition: "transform 0.3s, box-shadow 0.3s",
+              "&:hover": {
+                transform: "translateY(-5px)",
+                boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
+              },
+            }}
+          >
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{
+                fontFamily: "Poppins",
+                textAlign: "center",
+                fontWeight: "bold",
               }}
             >
-              {isEditing.dob ? (
-                savingField === "dob" ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  <SaveIcon />
-                )
-              ) : (
-                <EditIcon />
-              )}
-            </IconButton>
-          </Typography>
-        </Box>
-        <Box mb={2} display="flex" alignItems="center" justifyContent="center">
-          <Info sx={{ mr: 1, color: "#1976d2" }} />
-          <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
-            <strong>Bio:</strong>{" "}
-            {isEditing.bio ? (
-              <TextField
-                fullWidth
-                multiline
-                label="Bio"
-                rows={3}
-                value={profile.bio || ""}
-                onChange={(e) => handleProfileChange("bio", e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleFieldSave("bio")}
-                sx={{ fontFamily: "Poppins" }}
-                inputProps={{
-                  style: {
-                    fontFamily: "Poppins, sans-serif",
-                  },
-                }}
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "Poppins, sans-serif",
-                  },
-                }}
+              User Profile
+            </Typography>
+            <Box display="flex" justifyContent="center" mb={3}>
+              <Avatar
+                src={profile.profilePicture || currentDefaultAvatar}
+                alt={profile.username || "User"}
+                sx={{ width: 120, height: 120, border: "3px solid #1976d2" }}
               />
-            ) : (
-              profile.bio || "No bio set"
-            )}
-            <IconButton
-              onClick={() => {
-                if (isEditing.bio) {
-                  handleFieldSave("bio");
-                } else {
-                  handleEditToggle("bio");
-                }
-              }}
-            >
-              {isEditing.bio ? (
-                savingField === "bio" ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  <SaveIcon />
-                )
-              ) : (
-                <EditIcon />
-              )}
-            </IconButton>
-          </Typography>
-        </Box>
-        {["github", "linkedin", "facebook", "instagram", "twitter"].map(
-          (platform) => (
-            <Box
-              key={platform}
-              mb={2}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              {platform === "github" && (
-                <GitHub sx={{ mr: 1, color: "#1976d2" }} />
-              )}
-              {platform === "linkedin" && (
-                <LinkedIn sx={{ mr: 1, color: "#1976d2" }} />
-              )}
-              {platform === "facebook" && (
-                <Facebook sx={{ mr: 1, color: "#1976d2" }} />
-              )}
-              {platform === "instagram" && (
-                <Instagram sx={{ mr: 1, color: "#1976d2" }} />
-              )}
-              {platform === "twitter" && (
-                <Twitter sx={{ mr: 1, color: "#1976d2" }} />
-              )}
-              {isEditing[platform] ? (
-                <TextField
-                  fullWidth
-                  label={platform.charAt(0).toUpperCase() + platform.slice(1)}
-                  value={profile.socialMedia?.[platform] || ""}
-                  onChange={(e) =>
-                    handleSocialMediaChange(platform, e.target.value)
-                  }
-                  onKeyPress={(e) =>
-                    e.key === "Enter" && handleSocialMediaSave(platform)
-                  }
-                  sx={{ fontFamily: "Poppins" }}
-                  inputProps={{
-                    style: {
-                      fontFamily: "Poppins, sans-serif",
-                    },
-                  }}
-                  InputLabelProps={{
-                    style: {
-                      fontFamily: "Poppins, sans-serif",
-                    },
-                  }}
-                />
-              ) : (
-                <Button
-                  href={formatSocialLink(
-                    platform,
-                    profile.socialMedia?.[platform],
-                  )}
-                  target="_blank"
+            </Box>
+            <Box>
+              {error && (
+                <Typography
+                  color="error"
+                  mb={2}
+                  textAlign="center"
                   sx={{ fontFamily: "Poppins" }}
                 >
-                  {profile.socialMedia?.[platform] || "Not Set"}
-                </Button>
+                  {error}
+                </Typography>
               )}
-              <IconButton
-                onClick={() => {
-                  if (isEditing[platform]) {
-                    handleSocialMediaSave(platform);
-                  } else {
-                    handleEditToggle(platform);
-                  }
-                }}
+              <Box
+                mb={2}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
-                {isEditing[platform] ? (
-                  loadingPlatform[platform] ? (
-                    <CircularProgress size={20} />
+                <AccountCircle sx={{ mr: 1, color: "#1976d2" }} />
+                <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
+                  <strong>Username:</strong> {profile.username}
+                </Typography>
+              </Box>
+              <Box
+                mb={2}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <SportsEsports sx={{ mr: 1, color: "#1976d2" }} />
+                <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
+                  <strong>ELO:</strong> {profile.elo || "N/A"}
+                </Typography>
+              </Box>
+              <Box
+                mb={2}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Cake sx={{ mr: 1, color: "#1976d2" }} />
+                <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
+                  <strong>Date of Birth:</strong>{" "}
+                  {isCurrentUser && isEditing.dob ? (
+                    <TextField
+                      fullWidth
+                      type="date"
+                      label="Date of Birth"
+                      value={profile.dob || ""}
+                      onChange={(e) =>
+                        handleProfileChange("dob", e.target.value)
+                      }
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && handleFieldSave("dob")
+                      }
+                      sx={{ fontFamily: "Poppins" }}
+                      inputProps={{
+                        style: {
+                          fontFamily: "Poppins, sans-serif",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: "Poppins, sans-serif",
+                        },
+                      }}
+                    />
                   ) : (
-                    <SaveIcon />
-                  )
-                ) : (
-                  <EditIcon />
-                )}
-              </IconButton>
+                    profile.dob || "N/A"
+                  )}
+                  {isCurrentUser && (
+                    <IconButton
+                      onClick={() => {
+                        if (isEditing.dob) {
+                          handleFieldSave("dob");
+                        } else {
+                          handleEditToggle("dob");
+                        }
+                      }}
+                    >
+                      {isEditing.dob ? (
+                        savingField === "dob" ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <SaveIcon />
+                        )
+                      ) : (
+                        <EditIcon />
+                      )}
+                    </IconButton>
+                  )}
+                </Typography>
+              </Box>
+              <Box
+                mb={2}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Info sx={{ mr: 1, color: "#1976d2" }} />
+                <Typography variant="subtitle1" sx={{ fontFamily: "Poppins" }}>
+                  <strong>Bio:</strong>{" "}
+                  {isCurrentUser && isEditing.bio ? (
+                    <TextField
+                      fullWidth
+                      multiline
+                      label="Bio"
+                      rows={3}
+                      value={profile.bio || ""}
+                      onChange={(e) =>
+                        handleProfileChange("bio", e.target.value)
+                      }
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && handleFieldSave("bio")
+                      }
+                      sx={{ fontFamily: "Poppins" }}
+                      inputProps={{
+                        style: {
+                          fontFamily: "Poppins, sans-serif",
+                        },
+                      }}
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: "Poppins, sans-serif",
+                        },
+                      }}
+                    />
+                  ) : (
+                    profile.bio || "No bio set"
+                  )}
+                  {isCurrentUser && (
+                    <IconButton
+                      onClick={() => {
+                        if (isEditing.bio) {
+                          handleFieldSave("bio");
+                        } else {
+                          handleEditToggle("bio");
+                        }
+                      }}
+                    >
+                      {isEditing.bio ? (
+                        savingField === "bio" ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <SaveIcon />
+                        )
+                      ) : (
+                        <EditIcon />
+                      )}
+                    </IconButton>
+                  )}
+                </Typography>
+              </Box>
+              {["github", "linkedin", "facebook", "instagram", "twitter"].map(
+                (platform) => (
+                  <Box
+                    key={platform}
+                    mb={2}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {platform === "github" && (
+                      <GitHub sx={{ mr: 1, color: "#1976d2" }} />
+                    )}
+                    {platform === "linkedin" && (
+                      <LinkedIn sx={{ mr: 1, color: "#1976d2" }} />
+                    )}
+                    {platform === "facebook" && (
+                      <Facebook sx={{ mr: 1, color: "#1976d2" }} />
+                    )}
+                    {platform === "instagram" && (
+                      <Instagram sx={{ mr: 1, color: "#1976d2" }} />
+                    )}
+                    {platform === "twitter" && (
+                      <Twitter sx={{ mr: 1, color: "#1976d2" }} />
+                    )}
+                    {isCurrentUser && isEditing[platform] ? (
+                      <TextField
+                        fullWidth
+                        label={
+                          platform.charAt(0).toUpperCase() + platform.slice(1)
+                        }
+                        value={profile.socialMedia?.[platform] || ""}
+                        onChange={(e) =>
+                          handleSocialMediaChange(platform, e.target.value)
+                        }
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && handleSocialMediaSave(platform)
+                        }
+                        sx={{ fontFamily: "Poppins" }}
+                        inputProps={{
+                          style: {
+                            fontFamily: "Poppins, sans-serif",
+                          },
+                        }}
+                        InputLabelProps={{
+                          style: {
+                            fontFamily: "Poppins, sans-serif",
+                          },
+                        }}
+                      />
+                    ) : profile.socialMedia?.[platform] ? (
+                      <Button
+                        href={formatSocialLink(
+                          platform,
+                          profile.socialMedia?.[platform],
+                        )}
+                        target="_blank"
+                        sx={{ fontFamily: "Poppins" }}
+                      >
+                        {profile.socialMedia?.[platform]}
+                      </Button>
+                    ) : (
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontFamily: "Poppins" }}
+                      >
+                        Not Set
+                      </Typography>
+                    )}
+                    {isCurrentUser && (
+                      <IconButton
+                        onClick={() => {
+                          if (isEditing[platform]) {
+                            handleSocialMediaSave(platform);
+                          } else {
+                            handleEditToggle(platform);
+                          }
+                        }}
+                      >
+                        {isEditing[platform] ? (
+                          loadingPlatform[platform] ? (
+                            <CircularProgress size={20} />
+                          ) : (
+                            <SaveIcon />
+                          )
+                        ) : (
+                          <EditIcon />
+                        )}
+                      </IconButton>
+                    )}
+                  </Box>
+                ),
+              )}
             </Box>
-          ),
-        )}
-      </Box>
+          </Box>
+        )
+      )}
     </Box>
   );
 };

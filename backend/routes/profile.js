@@ -185,4 +185,75 @@ router.put("/games", authenticate, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /profile/search:
+ *   get:
+ *     summary: Search for a user's profile by username
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The username of the user to search for
+ *     responses:
+ *       200:
+ *         description: The searched user's profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 dob:
+ *                   type: string
+ *                 bio:
+ *                   type: string
+ *                 profilePicture:
+ *                   type: string
+ *                 socialMedia:
+ *                   type: object
+ *                   additionalProperties:
+ *                     type: string
+ *                 elo:
+ *                   type: number
+ *                 gamesPlayed:
+ *                   type: number
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Failed to search for profile
+ */
+router.get("/search", authenticate, async (req, res) => {
+  const { username } = req.query;
+
+  if (!username) {
+    return res
+      .status(400)
+      .json({ error: "Username query parameter is required" });
+  }
+
+  try {
+    const user = await User.findOne({ username }).select(
+      "username email dob bio profilePicture socialMedia elo gamesPlayed",
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error searching for profile:", error);
+    res.status(500).json({ error: "Failed to search for profile" });
+  }
+});
+
 module.exports = router;

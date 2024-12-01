@@ -85,7 +85,7 @@ const ForgotPassword: React.FC = () => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "calc(100vh - 64px - 100px)", // Adjust for Navbar and Footer height
+        minHeight: "calc(100vh - 64px - 100px)",
       }}
     >
       <Box

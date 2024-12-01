@@ -18,6 +18,36 @@ const app = express();
 app.use(cors({ origin: "*" })); // Allow requests from any origin
 app.use(bodyParser.json());
 
+// Custom logging middleware
+app.use((req, res, next) => {
+  // Log the request method, URL, headers, and body
+  console.log(`\nIncoming Request: ${req.method} ${req.url}`);
+  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+  console.log("Body:", JSON.stringify(req.body, null, 2));
+
+  // Capture the original write and end methods
+  const originalWrite = res.write;
+  const originalEnd = res.end;
+  const chunks = [];
+
+  // Override res.write to capture chunks of the response body
+  res.write = function (chunk) {
+    chunks.push(Buffer.from(chunk));
+    originalWrite.apply(res, arguments);
+  };
+
+  // Override res.end to capture the final chunk and log the complete response
+  res.end = function (chunk) {
+    if (chunk) chunks.push(Buffer.from(chunk));
+    const responseBody = Buffer.concat(chunks).toString("utf8");
+    console.log("Response Body:", responseBody);
+    originalEnd.apply(res, arguments);
+  };
+
+  // Proceed to the next middleware/route handler
+  next();
+});
+
 // Swagger documentation route
 app.use(
   "/api-docs",

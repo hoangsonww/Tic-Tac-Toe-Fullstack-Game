@@ -108,9 +108,9 @@ const LandingPage: React.FC = () => {
             {
               title: "Multiplayer Mode",
               description:
-                "Play Tic Tac Toe with your friends in the local multiplayer mode.",
+                "Play Tic Tac Toe with your friends in the local multiplayer mode, or online with players worldwide.",
               buttonText: "Multiplayer",
-              link: "/game",
+              link: "/home",
             },
             {
               title: "Global Leaderboard",
@@ -122,23 +122,23 @@ const LandingPage: React.FC = () => {
             {
               title: "Custom Board Sizes",
               description:
-                "Switch things up with customizable board sizes from 3x3 to 8x8.",
+                "Switch things up with customizable board sizes from 3x3 to 8x8 (only available for Local and AI matches.)",
               buttonText: "Customize",
-              link: "/settings",
+              link: "/home",
             },
             {
               title: "Timer Mode",
               description:
-                "Enable the timer to add a thrilling twist to your games.",
+                "You have 30 seconds to make your move, so you must think quickly and make decisive moves under time pressure!",
               buttonText: "Try Timer Mode",
-              link: "/settings",
+              link: "/home",
             },
             {
-              title: "AI Training Mode",
+              title: "User Profiles",
               description:
-                "Learn strategies with our AI and improve your Tic Tac Toe skills.",
-              buttonText: "Train with AI",
-              link: "/game",
+                "Create your own profiles and join the global community of players! You can also search for any player's profile, too.",
+              buttonText: "View Profile",
+              link: "/profile",
             },
           ].map((feature, index) => (
             <Grid item xs={12} sm={6} md={4} key={feature.title}>

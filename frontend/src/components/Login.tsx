@@ -44,7 +44,7 @@ const Login: React.FC = () => {
       setAuthToken(response.data.token);
 
       // Navigate to the homepage
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error("Login failed:", error);
       alert("Invalid email or password. Please try again.");
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "calc(100vh - 64px - 100px)", // Adjust for Navbar and Footer heights
+        minHeight: "calc(100vh - 64px - 100px)",
         textAlign: "center",
       }}
     >

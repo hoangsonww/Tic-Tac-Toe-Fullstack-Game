@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import Board from "../components/Board";
 import Settings from "../components/Settings";
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/system";
 
 const Home: React.FC = () => {
   const [boardSize, setBoardSize] = useState(4);
-  const [isAI, setIsAI] = useState(false);
+  const [gameMode, setGameMode] = useState<"ai" | "local" | "online">("ai");
   const [aiDifficulty, setAIDifficulty] = useState<
     "easy" | "medium" | "hard" | "impossible"
   >("medium");
   const [isTimerEnabled, setIsTimerEnabled] = useState(false);
-  const [timerDuration, setTimerDuration] = useState(30); // Default timer duration in seconds
+  const [timerDuration, setTimerDuration] = useState(30);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const theme = useTheme();
 
   return (
     <Box sx={{ textAlign: "center", py: 5 }}>
@@ -39,8 +42,8 @@ const Home: React.FC = () => {
       <Settings
         boardSize={boardSize}
         setBoardSize={setBoardSize}
-        isAI={isAI}
-        setIsAI={setIsAI}
+        gameMode={gameMode}
+        setGameMode={setGameMode}
         aiDifficulty={aiDifficulty}
         setAIDifficulty={setAIDifficulty}
         isTimerEnabled={isTimerEnabled}
@@ -58,10 +61,11 @@ const Home: React.FC = () => {
       />
       <Board
         boardSize={boardSize}
-        isAI={isAI}
+        isAI={gameMode === "ai"}
         aiDifficulty={aiDifficulty}
         isTimerEnabled={isTimerEnabled}
         timerDuration={timerDuration}
+        gameMode={gameMode}
       />
     </Box>
   );

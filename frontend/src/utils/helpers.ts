@@ -1,3 +1,7 @@
+/**
+ * Calculate the winner of the game
+ * @param board - 2D array representing the game board
+ */
 export const calculateWinner = (board: string[][]): string | null => {
   const boardSize = board.length;
 
@@ -37,7 +41,10 @@ export const calculateWinner = (board: string[][]): string | null => {
   return null;
 };
 
-// Check if the board is full (for detecting a draw)
+/**
+ * Check if the board is full
+ * @param board - 2D array representing the game board
+ */
 export const isBoardFull = (board: string[][]): boolean => {
   return board.every((row) => row.every((cell) => cell !== ""));
 };
