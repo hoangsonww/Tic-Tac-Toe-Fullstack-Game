@@ -189,7 +189,7 @@ const Leaderboard: React.FC = () => {
                       fontWeight: 600,
                       fontSize: "1.1rem",
                       sx: {
-                        maxWidth: "200px",
+                        maxWidth: "250px",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
