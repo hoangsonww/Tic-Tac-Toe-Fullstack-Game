@@ -53,15 +53,6 @@ const Register: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (
-    e: React.KeyboardEvent<HTMLDivElement>,
-    action: () => void,
-  ) => {
-    if (e.key === "Enter") {
-      action();
-    }
-  };
-
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -73,202 +64,207 @@ const Register: React.FC = () => {
   return (
     <Box
       sx={{
-        maxWidth: 400,
-        mx: "auto",
-        mt: 5,
-        mb: 5,
-        p: 3,
-        bgcolor: "background.paper",
-        borderRadius: 2,
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "calc(100vh - 64px - 100px)", // Adjust for Navbar and Footer heights
         textAlign: "center",
       }}
     >
-      <Avatar
+      <Box
         sx={{
-          bgcolor: "primary.main",
-          mx: "auto",
-          mb: 2,
-          width: isSmallScreen ? 56 : 64,
-          height: isSmallScreen ? 56 : 64,
-        }}
-      >
-        <LockIcon fontSize="large" />
-      </Avatar>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ fontFamily: "Poppins", fontWeight: "bold", textAlign: "center" }}
-      >
-        Register
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          fontFamily: "Poppins",
-          color: "text.secondary",
-          mb: 3,
+          maxWidth: 400,
+          p: 3,
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
           textAlign: "center",
         }}
       >
-        Create a new account to get started
-      </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          {...register("email")}
-          label="Email"
-          fullWidth
-          margin="normal"
-          type="email"
-          required
-          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
+        <Avatar
           sx={{
-            "& .MuiInputBase-input": {
-              fontFamily: "Poppins",
-            },
-            "& .MuiInputLabel-root": {
-              fontFamily: "Poppins",
-            },
-          }}
-        />
-        <TextField
-          label="Password"
-          fullWidth
-          margin="normal"
-          type={passwordVisible ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
-          required
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={togglePasswordVisibility}
-                  sx={{
-                    color:
-                      theme.palette.mode === "dark"
-                        ? "rgba(255, 255, 255, 0.7)"
-                        : "rgba(0, 0, 0, 0.7)",
-                  }}
-                >
-                  {passwordVisible ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            "& .MuiInputBase-input": {
-              fontFamily: "Poppins",
-            },
-            "& .MuiInputLabel-root": {
-              fontFamily: "Poppins",
-            },
-          }}
-        />
-        <TextField
-          label="Confirm Password"
-          fullWidth
-          margin="normal"
-          type={confirmPasswordVisible ? "text" : "password"}
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
-          required
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={toggleConfirmPasswordVisibility}
-                  sx={{
-                    color:
-                      theme.palette.mode === "dark"
-                        ? "rgba(255, 255, 255, 0.7)"
-                        : "rgba(0, 0, 0, 0.7)",
-                  }}
-                >
-                  {confirmPasswordVisible ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            "& .MuiInputBase-input": {
-              fontFamily: "Poppins",
-            },
-            "& .MuiInputLabel-root": {
-              fontFamily: "Poppins",
-            },
-          }}
-        />
-        <TextField
-          {...register("username")}
-          label="Username"
-          fullWidth
-          margin="normal"
-          required
-          onKeyPress={(e) => handleKeyPress(e, handleSubmit(onSubmit))}
-          sx={{
-            "& .MuiInputBase-input": {
-              fontFamily: "Poppins",
-            },
-            "& .MuiInputLabel-root": {
-              fontFamily: "Poppins",
-            },
-          }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          fullWidth
-          disabled={loading}
-          sx={{
-            mt: 2,
-            fontFamily: "Poppins",
-            fontWeight: "bold",
-            py: 1.5,
+            bgcolor: "primary.main",
+            mx: "auto",
+            mb: 2,
+            width: isSmallScreen ? 56 : 64,
+            height: isSmallScreen ? 56 : 64,
           }}
         >
-          {loading ? (
-            <CircularProgress size={24} sx={{ color: "white" }} />
-          ) : (
-            "Register"
-          )}
-        </Button>
-      </form>
-      {error && (
+          <LockIcon fontSize="large" />
+        </Avatar>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ fontFamily: "Poppins", fontWeight: "bold", textAlign: "center" }}
+        >
+          Register
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            fontFamily: "Poppins",
+            color: "text.secondary",
+            mb: 3,
+            textAlign: "center",
+          }}
+        >
+          Create a new account to get started
+        </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            {...register("email")}
+            label="Email"
+            fullWidth
+            margin="normal"
+            type="email"
+            required
+            sx={{
+              "& .MuiInputBase-input": {
+                fontFamily: "Poppins",
+              },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Poppins",
+              },
+            }}
+          />
+          <TextField
+            label="Password"
+            fullWidth
+            margin="normal"
+            type={passwordVisible ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={togglePasswordVisibility}
+                    sx={{
+                      color:
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.7)"
+                          : "rgba(0, 0, 0, 0.7)",
+                    }}
+                  >
+                    {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              "& .MuiInputBase-input": {
+                fontFamily: "Poppins",
+              },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Poppins",
+              },
+            }}
+          />
+          <TextField
+            label="Confirm Password"
+            fullWidth
+            margin="normal"
+            type={confirmPasswordVisible ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={toggleConfirmPasswordVisibility}
+                    sx={{
+                      color:
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.7)"
+                          : "rgba(0, 0, 0, 0.7)",
+                    }}
+                  >
+                    {confirmPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              "& .MuiInputBase-input": {
+                fontFamily: "Poppins",
+              },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Poppins",
+              },
+            }}
+          />
+          <TextField
+            {...register("username")}
+            label="Username"
+            fullWidth
+            margin="normal"
+            required
+            sx={{
+              "& .MuiInputBase-input": {
+                fontFamily: "Poppins",
+              },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Poppins",
+              },
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            fullWidth
+            disabled={loading}
+            sx={{
+              mt: 2,
+              fontFamily: "Poppins",
+              fontWeight: "bold",
+              py: 1.5,
+            }}
+          >
+            {loading ? (
+              <CircularProgress size={24} sx={{ color: "white" }} />
+            ) : (
+              "Register"
+            )}
+          </Button>
+        </form>
+        {error && (
+          <Typography
+            variant="body2"
+            color="error"
+            sx={{
+              mt: 3,
+              fontFamily: "Poppins",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </Typography>
+        )}
         <Typography
           variant="body2"
-          color="error"
           sx={{
             mt: 3,
             fontFamily: "Poppins",
             textAlign: "center",
+            color: "text.secondary",
           }}
         >
-          {error}
+          Already have an account?{" "}
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => navigate("/login")}
+            sx={{ fontFamily: "Poppins", fontWeight: "bold" }}
+          >
+            Log in
+          </Button>
         </Typography>
-      )}
-      <Typography
-        variant="body2"
-        sx={{
-          mt: 3,
-          fontFamily: "Poppins",
-          textAlign: "center",
-          color: "text.secondary",
-        }}
-      >
-        Already have an account?{" "}
-        <Button
-          variant="text"
-          color="primary"
-          onClick={() => navigate("/login")}
-          sx={{ fontFamily: "Poppins", fontWeight: "bold" }}
-        >
-          Log in
-        </Button>
-      </Typography>
+      </Box>
     </Box>
   );
 };
