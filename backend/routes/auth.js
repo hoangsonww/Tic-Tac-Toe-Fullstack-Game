@@ -227,4 +227,47 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/validate-token:
+ *   get:
+ *     summary: Validate a user's token
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token is valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 valid:
+ *                   type: boolean
+ *                   description: Whether the token is valid
+ *                 userId:
+ *                   type: string
+ *                   description: The ID of the authenticated user
+ *       401:
+ *         description: Invalid or missing token
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/validate-token", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Token is required" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ valid: true, userId: decoded.userId });
+  } catch (error) {
+    console.error("Token validation error:", error);
+    res.status(401).json({ valid: false, error: "Invalid token" });
+  }
+});
+
 module.exports = router;

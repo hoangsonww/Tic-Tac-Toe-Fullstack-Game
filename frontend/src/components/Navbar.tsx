@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -35,7 +35,59 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogout = () => {
+  // Token validation logic
+  useEffect(() => {
+    const validateToken = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.warn("No token found, logging out.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:4000/auth/validate-token",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Validation response:", data);
+
+        // If the token is invalid, log out
+        if (!data.valid) {
+          console.warn("Token is invalid, logging out.");
+          handleLogout("Your session has expired. Please log in again.");
+        }
+      } catch (error) {
+        console.error("Error validating token:", error);
+        handleLogout("An error occurred while validating your session.");
+      }
+    };
+
+    const intervalId = setInterval(validateToken, 3000); // Validate token every 3 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
+
+  const handleLogout = (message?: string) => {
+    if (message) {
+      alert(message);
+    }
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleLogoutAlt = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
@@ -54,7 +106,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
     <>
       <AppBar position="static" color="primary">
         <Toolbar>
-          {/* Logo/Title */}
           <Typography
             variant="h6"
             sx={{
@@ -72,7 +123,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
             </Link>
           </Typography>
 
-          {/* Mobile Hamburger Menu */}
           <Box sx={{ display: { xs: "block", md: "none" } }}>
             <IconButton
               color="inherit"
@@ -83,7 +133,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
             </IconButton>
           </Box>
 
-          {/* Desktop Menu */}
           <Box
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
           >
@@ -108,7 +157,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
                 {item.label}
               </Button>
             ))}
-            {/* Register Button */}
             <Button
               color="inherit"
               component={Link}
@@ -127,11 +175,10 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
             >
               Register
             </Button>
-            {/* Login/Logout Button */}
             {isLoggedIn ? (
               <Button
                 color="inherit"
-                onClick={handleLogout}
+                onClick={handleLogoutAlt}
                 startIcon={<ExitToApp />}
                 sx={{
                   fontFamily: "Poppins, sans-serif",
@@ -158,7 +205,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
                 Login
               </Button>
             )}
-            {/* Dark Mode Toggle Button */}
             <IconButton color="inherit" onClick={toggleTheme} sx={{ ml: 2 }}>
               {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
@@ -166,7 +212,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
         </Toolbar>
       </AppBar>
 
-      {/* Drawer for Mobile Menu */}
       <Drawer
         anchor="left"
         open={isDrawerOpen}
@@ -196,7 +241,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
               />
             </ListItem>
           ))}
-          {/* Register Button */}
           <ListItem
             component={Link}
             to="/register"
@@ -217,7 +261,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
               }}
             />
           </ListItem>
-          {/* Login/Logout Button */}
           {isLoggedIn ? (
             <ListItem
               onClick={() => {
@@ -262,7 +305,6 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
               />
             </ListItem>
           )}
-          {/* Dark Mode Toggle in Drawer */}
           <ListItem>
             <ListItemIcon sx={{ color: isDarkMode ? "white" : "#333" }}>
               {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}

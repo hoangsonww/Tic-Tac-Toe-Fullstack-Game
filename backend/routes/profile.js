@@ -241,7 +241,12 @@ router.get("/search", authenticate, async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ username }).select(
+    // Escape the username to prevent regex injection
+    const escapedUsername = escapeRegex(username.trim());
+    const regex = new RegExp(escapedUsername, "i"); // 'i' for case-insensitive search
+
+    // Use the regex in your query
+    const user = await User.findOne({ username: regex }).select(
       "username email dob bio profilePicture socialMedia elo gamesPlayed",
     );
 
@@ -255,5 +260,9 @@ router.get("/search", authenticate, async (req, res) => {
     res.status(500).json({ error: "Failed to search for profile" });
   }
 });
+
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special characters
+}
 
 module.exports = router;

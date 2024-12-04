@@ -104,7 +104,8 @@ const Board: React.FC<BoardProps> = ({
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const url = "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/cancel";
+      const url =
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/cancel";
       fetch(url, {
         method: "POST",
         headers: {
