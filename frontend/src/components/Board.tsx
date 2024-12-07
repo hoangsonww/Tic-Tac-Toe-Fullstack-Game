@@ -104,8 +104,7 @@ const Board: React.FC<BoardProps> = ({
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const url =
-        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/cancel";
+      const url = "http://localhost:4000/leaderboard/matchmaking/cancel";
       fetch(url, {
         method: "POST",
         headers: {
@@ -251,7 +250,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/ai-match",
+        "http://localhost:4000/leaderboard/ai-match",
         {
           method: "POST",
           headers: {
@@ -279,7 +278,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/finish",
+        "http://localhost:4000/leaderboard/match/finish",
         {
           method: "POST",
           headers: {
@@ -334,8 +333,11 @@ const Board: React.FC<BoardProps> = ({
   };
 
   const startMatchmaking = async () => {
-    if (!username) {
+    const token = localStorage.getItem("token");
+
+    if (!token || !username) {
       alert("You must be logged in to start matchmaking.");
+      setIsMatchmaking(false);
       return;
     }
 
@@ -343,7 +345,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking",
+        "http://localhost:4000/leaderboard/matchmaking",
         {
           method: "POST",
           headers: {
@@ -385,6 +387,10 @@ const Board: React.FC<BoardProps> = ({
         setOpponentSymbol("O");
         setIsPlayerTurn(true);
         checkMatchmakingStatus();
+      } else if (response.status === 401) {
+        alert("You must be logged in to start matchmaking.");
+        setIsMatchmaking(false);
+        return;
       } else {
         console.error("Matchmaking error:", data);
         setIsMatchmaking(false);
@@ -398,7 +404,7 @@ const Board: React.FC<BoardProps> = ({
   const checkMatchmakingStatus = async () => {
     try {
       const response = await fetch(
-        `https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/status?player=${username}`,
+        `http://localhost:4000/leaderboard/matchmaking/status?player=${username}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -438,7 +444,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        `https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/state?matchId=${matchId}`,
+        `http://localhost:4000/leaderboard/match/state?matchId=${matchId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -521,7 +527,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/move",
+        "http://localhost:4000/leaderboard/match/move",
         {
           method: "POST",
           headers: {
@@ -556,7 +562,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/timeout",
+        "http://localhost:4000/leaderboard/match/timeout",
         {
           method: "POST",
           headers: {

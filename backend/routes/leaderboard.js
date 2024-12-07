@@ -396,7 +396,7 @@ router.post("/matchmaking", authenticate, async (req, res) => {
       { $set: { status: "abandoned" } },
     );
 
-    // Find a pending match that is strictly waiting for an opponent
+    // Try to find a pending match from another player
     const pendingMatch = await Match.findOne({
       status: "waiting",
       opponent: null,
@@ -404,6 +404,7 @@ router.post("/matchmaking", authenticate, async (req, res) => {
     }).sort({ createdAt: 1 }); // Get the oldest waiting match
 
     if (pendingMatch) {
+      // If found, assign current player as opponent and activate match
       pendingMatch.opponent = player;
       pendingMatch.status = "active";
       pendingMatch.lastMoveTime = new Date();
@@ -416,7 +417,7 @@ router.post("/matchmaking", authenticate, async (req, res) => {
       });
     }
 
-    // Create a new match with status 'waiting' and opponent set to null
+    // No pending match found, create a new waiting match for this user
     const newMatch = new Match({
       player,
       opponent: null,
@@ -424,6 +425,15 @@ router.post("/matchmaking", authenticate, async (req, res) => {
       createdAt: new Date(),
     });
     await newMatch.save();
+
+    // Remove all other waiting matches associated with this user,
+    // keeping only the most recently created one (newMatch)
+    await Match.deleteMany({
+      player,
+      status: "waiting",
+      _id: { $ne: newMatch._id },
+    });
+
     res.status(202).json({ message: "Searching for an opponent..." });
   } catch (error) {
     console.error("Matchmaking error:", error);

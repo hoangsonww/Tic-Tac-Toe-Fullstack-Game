@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Token = require("../models/Token");
 
 const router = express.Router();
 
@@ -108,8 +109,23 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
+    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "72h",
+    });
+
+    // Remove any existing token for this user
+    await Token.deleteOne({ username: user.username });
+
+    // Create a new token record
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 72 * 60 * 60 * 1000); // 72 hours from now
+
+    await Token.create({
+      username: user.username,
+      token,
+      createdAt: now,
+      expiresAt: expiresAt,
     });
 
     res.json({ token, username: user.username });
@@ -262,7 +278,22 @@ router.get("/validate-token", async (req, res) => {
   }
 
   try {
+    // First, check if the token exists in the tokens collection
+    const tokenDoc = await Token.findOne({ token });
+    if (!tokenDoc) {
+      return res.status(401).json({ valid: false, error: "Token not found" });
+    }
+
+    // Check if the token has expired based on DB record
+    const now = new Date();
+    if (tokenDoc.expiresAt < now) {
+      return res.status(401).json({ valid: false, error: "Token expired" });
+    }
+
+    // Token is present and not expired in the DB, now verify with JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // If JWT verification is successful:
     res.json({ valid: true, userId: decoded.userId });
   } catch (error) {
     console.error("Token validation error:", error);

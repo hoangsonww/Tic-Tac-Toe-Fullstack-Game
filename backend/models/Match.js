@@ -6,6 +6,11 @@ const mongoose = require("mongoose");
  *   schemas:
  *     Match:
  *       type: object
+ *       description: >
+ *         The `Match` schema represents the data structure for a match in the application.
+ *         It stores details about the initiating player, optional opponent, match status,
+ *         moves made during the match, and metadata such as timestamps and the winner.
+ *         Matches progress through three possible statuses: `waiting`, `active`, and `complete`.
  *       required:
  *         - player
  *       properties:

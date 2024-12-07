@@ -66,17 +66,21 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
         // If the token is invalid, log out
         if (!data.valid) {
           console.warn("Token is invalid, logging out.");
-          handleLogout("Your session has expired. Please log in again.");
+          handleLogout(
+            "Your session has expired, or you are currently logged in on another browser. Please check your connectivity and log in again to continue.",
+          );
         }
       } catch (error) {
         console.error("Error validating token:", error);
-        handleLogout("An error occurred while validating your session.");
+        handleLogout(
+          "Your session has expired, or you are currently logged in on another browser. Please check your connectivity and log in again to continue.",
+        );
       }
     };
 
-    const intervalId = setInterval(validateToken, 3000); // Validate token every 3 seconds
+    const intervalId = setInterval(validateToken, 1000); // Validate token every 1 second
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleLogout = (message?: string) => {

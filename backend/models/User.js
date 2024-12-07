@@ -6,6 +6,11 @@ const mongoose = require("mongoose");
  *   schemas:
  *     User:
  *       type: object
+ *       description: >
+ *         The `User` schema represents the structure for storing user data in the application.
+ *         It includes personal information such as email, username, and date of birth,
+ *         as well as metadata like ELO rating, games played, and links to social media accounts.
+ *         Users have a unique email and username for identification.
  *       required:
  *         - email
  *         - password

@@ -61,10 +61,14 @@ const Profile: React.FC = () => {
     "/OIP19.webp",
     "/OIP20.webp",
   ];
-  const [currentDefaultAvatar, setCurrentDefaultAvatar] = useState<string>(
-    defaultAvatars[0],
-  );
   const lastDefaultAvatarIndexRef = useRef<number | null>(null);
+  const [currentDefaultAvatar, setCurrentDefaultAvatar] = useState<string>(
+    () => {
+      const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+      lastDefaultAvatarIndexRef.current = randomIndex;
+      return defaultAvatars[randomIndex];
+    },
+  );
 
   // Fetch current user's username on mount
   useEffect(() => {
@@ -82,7 +86,7 @@ const Profile: React.FC = () => {
       });
   }, []);
 
-  // Fetch profile data based on searchQuery, with debounce of 500ms
+  // Fetch profile data based on searchQuery, with debounce of 750ms
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -127,7 +131,7 @@ const Profile: React.FC = () => {
           setProfile(null);
         })
         .finally(() => setLoading(false));
-    }, 500);
+    }, 750);
 
     return () => {
       if (searchTimeoutRef.current) {
@@ -135,25 +139,6 @@ const Profile: React.FC = () => {
       }
     };
   }, [searchQuery, currentUserUsername]);
-
-  // Update default avatar when profile changes
-  useEffect(() => {
-    if (!profile || profile.profilePicture) {
-      // If profile is null or profilePicture is set, no need to update default avatar
-      return;
-    }
-
-    let newIndex = Math.floor(Math.random() * defaultAvatars.length);
-
-    // Ensure newIndex is not the same as lastDefaultAvatarIndexRef.current
-    while (newIndex === lastDefaultAvatarIndexRef.current) {
-      newIndex = Math.floor(Math.random() * defaultAvatars.length);
-    }
-
-    lastDefaultAvatarIndexRef.current = newIndex;
-    setCurrentDefaultAvatar(defaultAvatars[newIndex]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile]);
 
   // Toggle edit mode for a specific field
   const handleEditToggle = (field: string) => {

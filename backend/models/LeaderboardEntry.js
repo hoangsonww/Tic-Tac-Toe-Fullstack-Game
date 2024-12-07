@@ -6,6 +6,10 @@ const mongoose = require("mongoose");
  *   schemas:
  *     LeaderboardEntry:
  *       type: object
+ *       description: >
+ *         The `LeaderboardEntry` schema represents a player's standing on the leaderboard.
+ *         It tracks the player's username, ELO rating (used for rankings), and performance
+ *         metrics such as total wins, losses, and draws. Each player has a unique entry.
  *       required:
  *         - username
  *       properties:
