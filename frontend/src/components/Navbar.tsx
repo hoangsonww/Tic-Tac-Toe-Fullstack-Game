@@ -47,7 +47,7 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
 
       try {
         const response = await fetch(
-          "http://localhost:4000/auth/validate-token",
+          "https://tic-tac-toe-fullstack-game.onrender.com/auth/validate-token",
           {
             method: "GET",
             headers: {
