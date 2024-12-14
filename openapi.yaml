@@ -3,11 +3,10 @@ info:
   title: Tic Tac Toe Pro API
   version: 1.0.0
   description: API documentation for Tic Tac Toe Pro Game
-  termsOfService: https://example.com/terms
   contact:
     name: Son Nguyen
     url: https://sonnguyenhoang.com
-    email: son@example.com
+    email: hoangson091104@gmail.com
 servers:
   - url: https://tic-tac-toe-fullstack-game.onrender.com
 paths:
