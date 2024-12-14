@@ -69,6 +69,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 - **User Authentication**: Secure registration, login, and password reset.
 - **ELO System**: Dynamic player rankings based on game results and difficulty.
 - **Swagger Documentation**: Interactive API documentation for developers.
+- **OpenAPI Specification**: Standardized API schema for easy integration.
 - **Game Stats**: Record game results and track wins, losses, and draws.
 - **Socket.io Integration**: Real-time updates for multiplayer matches and AI moves.
 
