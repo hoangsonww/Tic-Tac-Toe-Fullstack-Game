@@ -1,0 +1,336 @@
+openapi: 3.0.0
+info:
+  title: Tic Tac Toe Pro API
+  version: 1.0.0
+  description: API documentation for Tic Tac Toe Pro Game
+  termsOfService: https://example.com/terms
+  contact:
+    name: Son Nguyen
+    url: https://sonnguyenhoang.com
+    email: son@example.com
+servers:
+  - url: https://tic-tac-toe-fullstack-game.onrender.com
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request
+  /auth/login:
+    post:
+      summary: Login a user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+  /auth/forgot-password:
+    post:
+      summary: Verify if the email exists for password reset
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Email exists
+        '404':
+          description: Email not found
+  /auth/reset-password:
+    post:
+      summary: Reset the password of a user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          description: Invalid token or request
+  /auth/validate-token:
+    get:
+      summary: Validate a user's token
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Token is valid
+        '401':
+          description: Token is invalid
+  /leaderboard:
+    get:
+      summary: Get the global leaderboard
+      tags:
+        - Leaderboard
+      responses:
+        '200':
+          description: Leaderboard retrieved
+  /leaderboard/match:
+    post:
+      summary: Report a match result between two players
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        '201':
+          description: Match result reported successfully
+  /leaderboard/ai-match:
+    post:
+      summary: Report a match result against AI
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        '201':
+          description: Match result against AI reported successfully
+  /leaderboard/search:
+    get:
+      summary: Search the leaderboard for a specific username
+      tags:
+        - Leaderboard
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found in leaderboard
+        '404':
+          description: User not found
+  /leaderboard/matchmaking:
+    post:
+      summary: Initiate matchmaking for a PvP match
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player:
+                  type: string
+      responses:
+        '201':
+          description: Matchmaking initiated
+  /leaderboard/match/move:
+    post:
+      summary: Record and synchronize a player's move during an active PvP match
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                matchId:
+                  type: string
+                move:
+                  type: string
+      responses:
+        '200':
+          description: Move recorded successfully
+  /leaderboard/matchmaking/status:
+    get:
+      summary: Get the status of the matchmaking process
+      tags:
+        - Leaderboard
+      responses:
+        '200':
+          description: Matchmaking status retrieved
+  /leaderboard/match/finish:
+    post:
+      summary: Finalize and record the result of a PvP match
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        '201':
+          description: Match result finalized
+  /leaderboard/match/timeout:
+    post:
+      summary: Check if a match has timed out and determine the winner
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                matchId:
+                  type: string
+      responses:
+        '200':
+          description: Timeout result determined
+  /leaderboard/match/state:
+    get:
+      summary: Retrieve the current state of the board for a match
+      tags:
+        - Leaderboard
+      parameters:
+        - name: matchId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Board state retrieved
+  /leaderboard/matchmaking/cancel:
+    post:
+      summary: Cancel matchmaking and delete any waiting matches for the player
+      tags:
+        - Leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                player:
+                  type: string
+      responses:
+        '200':
+          description: Matchmaking canceled
+  /profile:
+    get:
+      summary: Get the authenticated user's profile
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: User profile retrieved
+    put:
+      summary: Update the authenticated user's profile
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Profile updated successfully
+  /profile/games:
+    put:
+      summary: Increment the user's games played count
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: Games played count incremented
+  /profile/search:
+    get:
+      summary: Search for a user's profile by username
+      tags:
+        - Profile
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile found
+        '404':
+          description: User profile not found
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    Match:
+      type: object
+      properties:
+        player1:
+          type: string
+        player2:
+          type: string
+        winner:
+          type: string
+        moves:
+          type: array
+          items:
+            type: string
+    LeaderboardEntry:
+      type: object
+      properties:
+        username:
+          type: string
+        wins:
+          type: integer
+        losses:
+          type: integer
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
