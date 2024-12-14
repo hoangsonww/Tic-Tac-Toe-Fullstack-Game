@@ -104,7 +104,7 @@ const Board: React.FC<BoardProps> = ({
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const url = "http://localhost:4000/leaderboard/matchmaking/cancel";
+      const url = "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/cancel";
       fetch(url, {
         method: "POST",
         headers: {
@@ -250,7 +250,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:4000/leaderboard/ai-match",
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/ai-match",
         {
           method: "POST",
           headers: {
@@ -278,7 +278,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:4000/leaderboard/match/finish",
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/finish",
         {
           method: "POST",
           headers: {
@@ -345,7 +345,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:4000/leaderboard/matchmaking",
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking",
         {
           method: "POST",
           headers: {
@@ -404,7 +404,7 @@ const Board: React.FC<BoardProps> = ({
   const checkMatchmakingStatus = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4000/leaderboard/matchmaking/status?player=${username}`,
+        `https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/status?player=${username}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -444,7 +444,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        `http://localhost:4000/leaderboard/match/state?matchId=${matchId}`,
+        `https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/state?matchId=${matchId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -527,7 +527,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:4000/leaderboard/match/move",
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/move",
         {
           method: "POST",
           headers: {
@@ -562,7 +562,7 @@ const Board: React.FC<BoardProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:4000/leaderboard/match/timeout",
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/timeout",
         {
           method: "POST",
           headers: {
