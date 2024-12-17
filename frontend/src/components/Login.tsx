@@ -35,10 +35,10 @@ const Login: React.FC = () => {
       console.log("Login successful:", response.data);
 
       // Store the token in local storage
-      localStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("token", response.data.token);
 
       // Store the username in local storage under TicTacToeUsername
-      localStorage.setItem("TicTacToeUsername", response.data.username);
+      sessionStorage.setItem("TicTacToeUsername", response.data.username);
 
       // Set the token for future API requests
       setAuthToken(response.data.token);

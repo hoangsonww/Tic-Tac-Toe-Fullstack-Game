@@ -38,7 +38,7 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
   // Token validation logic
   useEffect(() => {
     const validateToken = async () => {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       if (!token) {
         console.warn("No token found, logging out.");
@@ -81,22 +81,23 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
     const intervalId = setInterval(validateToken, 1000); // Validate token every 1 second
 
     return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = (message?: string) => {
     if (message) {
       alert(message);
     }
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     navigate("/login");
   };
 
   const handleLogoutAlt = () => {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     navigate("/login");
   };
 
-  const isLoggedIn = !!localStorage.getItem("token");
+  const isLoggedIn = !!sessionStorage.getItem("token");
 
   const menuItems = [
     { label: "Home", icon: <Home />, path: "/home" },

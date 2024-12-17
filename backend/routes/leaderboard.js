@@ -670,6 +670,9 @@ router.post("/match/finish", authenticate, async (req, res) => {
       playerResult,
       "human",
     );
+
+    console.log("playerEntry.elo", newPlayerElo);
+
     const newOpponentElo = calculateElo(
       opponentEntry.elo,
       playerEntry.elo,
@@ -677,48 +680,38 @@ router.post("/match/finish", authenticate, async (req, res) => {
       "human",
     );
 
+    console.log("opponentEntry.elo", newOpponentElo);
+
     // Update LeaderboardEntry for both players
-    const playerUpdates = {
-      elo: newPlayerElo,
-      totalWins:
-        playerResult === "win"
-          ? playerEntry.totalWins + 1
-          : playerEntry.totalWins,
-      totalLosses:
-        playerResult === "loss"
-          ? playerEntry.totalLosses + 1
-          : playerEntry.totalLosses,
-      totalDraws:
-        playerResult === "draw"
-          ? playerEntry.totalDraws + 1
-          : playerEntry.totalDraws,
-    };
+    // Increment fields dynamically
+    const playerIncrementFields = {};
+    if (playerResult === "win") playerIncrementFields.totalWins = 1;
+    if (playerResult === "loss") playerIncrementFields.totalLosses = 1;
+    if (playerResult === "draw") playerIncrementFields.totalDraws = 1;
 
-    const opponentUpdates = {
-      elo: newOpponentElo,
-      totalWins:
-        opponentResult === "win"
-          ? opponentEntry.totalWins + 1
-          : opponentEntry.totalWins,
-      totalLosses:
-        opponentResult === "loss"
-          ? opponentEntry.totalLosses + 1
-          : opponentEntry.totalLosses,
-      totalDraws:
-        opponentResult === "draw"
-          ? opponentEntry.totalDraws + 1
-          : opponentEntry.totalDraws,
-    };
+    const opponentIncrementFields = {};
+    if (opponentResult === "win") opponentIncrementFields.totalWins = 1;
+    if (opponentResult === "loss") opponentIncrementFields.totalLosses = 1;
+    if (opponentResult === "draw") opponentIncrementFields.totalDraws = 1;
 
+    // Update player entry
     await LeaderboardEntry.findOneAndUpdate(
       { username: match.player },
-      { $set: playerUpdates },
-      { upsert: true },
+      {
+        $set: { elo: newPlayerElo },
+        $inc: playerIncrementFields,
+      },
+      { upsert: true, new: true },
     );
+
+    // Update opponent entry
     await LeaderboardEntry.findOneAndUpdate(
       { username: match.opponent },
-      { $set: opponentUpdates },
-      { upsert: true },
+      {
+        $set: { elo: newOpponentElo },
+        $inc: opponentIncrementFields,
+      },
+      { upsert: true, new: true },
     );
 
     await updateUserStats(match.player, newPlayerElo, playerResult);
@@ -870,7 +863,7 @@ const calculateElo = (playerElo, opponentElo, result, difficulty) => {
     return Math.max(0, newElo);
   } else {
     // Human opponent logic using standard ELO formula
-    const K = 32; // ELO K-factor for human matches
+    const K = 420; // ELO K-factor for human matches
     const expectedScore =
       1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400));
     let actualScore;
@@ -883,6 +876,8 @@ const calculateElo = (playerElo, opponentElo, result, difficulty) => {
 
     // Calculate new ELO
     const newElo = playerElo + K * (actualScore - expectedScore);
+
+    console.log("newElo", newElo);
 
     // Return updated ELO, ensuring it doesn't drop below 0
     return Math.max(0, Math.round(newElo));

@@ -52,7 +52,7 @@ const Board: React.FC<BoardProps> = ({
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const timeoutPollingInterval = useRef<NodeJS.Timeout | null>(null);
   const pollingInterval = useRef<NodeJS.Timeout | null>(null);
-  const username = localStorage.getItem("TicTacToeUsername");
+  const username = sessionStorage.getItem("TicTacToeUsername");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -104,12 +104,13 @@ const Board: React.FC<BoardProps> = ({
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const url = "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/cancel";
+      const url =
+        "https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/cancel";
       fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
         body: JSON.stringify({ player: username }),
         keepalive: true,
@@ -255,7 +256,7 @@ const Board: React.FC<BoardProps> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             player: username,
@@ -283,7 +284,7 @@ const Board: React.FC<BoardProps> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             matchId,
@@ -333,7 +334,7 @@ const Board: React.FC<BoardProps> = ({
   };
 
   const startMatchmaking = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     if (!token || !username) {
       alert("You must be logged in to start matchmaking.");
@@ -350,7 +351,7 @@ const Board: React.FC<BoardProps> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             player: username,
@@ -407,7 +408,7 @@ const Board: React.FC<BoardProps> = ({
         `https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/matchmaking/status?player=${username}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         },
       );
@@ -447,7 +448,7 @@ const Board: React.FC<BoardProps> = ({
         `https://tic-tac-toe-fullstack-game.onrender.com/leaderboard/match/state?matchId=${matchId}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         },
       );
@@ -532,7 +533,7 @@ const Board: React.FC<BoardProps> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             matchId,
@@ -567,7 +568,7 @@ const Board: React.FC<BoardProps> = ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             matchId,

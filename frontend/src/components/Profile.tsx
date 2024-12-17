@@ -62,6 +62,7 @@ const Profile: React.FC = () => {
     "/OIP20.webp",
   ];
   const lastDefaultAvatarIndexRef = useRef<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentDefaultAvatar, setCurrentDefaultAvatar] = useState<string>(
     () => {
       const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
@@ -75,7 +76,7 @@ const Profile: React.FC = () => {
     api
       .get("/profile", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       })
       .then((response) => {
@@ -98,7 +99,7 @@ const Profile: React.FC = () => {
 
       let endpoint = "/profile";
       const headers = {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       if (searchQuery.trim() !== "") {
@@ -184,7 +185,7 @@ const Profile: React.FC = () => {
 
       await api.put("/profile", dataToUpdate, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
 
@@ -240,7 +241,7 @@ const Profile: React.FC = () => {
 
       await api.put("/profile", dataToUpdate, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
 

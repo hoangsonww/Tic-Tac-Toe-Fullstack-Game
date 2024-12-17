@@ -18,7 +18,7 @@ const router = express.Router();
  *     summary: Get the authenticated user's profile
  *     tags: [Profile]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: The user's profile
@@ -70,7 +70,7 @@ router.get("/", authenticate, async (req, res) => {
  *     summary: Update the authenticated user's profile
  *     tags: [Profile]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -150,7 +150,7 @@ router.put("/", authenticate, async (req, res) => {
  *     summary: Increment the user's games played count
  *     tags: [Profile]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Games played updated successfully
@@ -192,7 +192,7 @@ router.put("/games", authenticate, async (req, res) => {
  *     summary: Search for a user's profile by username
  *     tags: [Profile]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: username
