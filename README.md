@@ -325,12 +325,13 @@ The mobile drawer allows users to navigate between pages and access their profil
 ## **File Structure**
 
 ```
-tic-tac-toe-pro/
+Tic-Tac-Toe-Fullstack-Game/
 ├── backend/
 │   ├── models/
 │   │   ├── Match.js
 │   │   ├── User.js
 │   │   ├── LeaderboardEntry.js
+│   │   ├── Token.js
 │   ├── routes/
 │   │   ├── auth.js
 │   │   ├── profile.js
@@ -399,13 +400,16 @@ tic-tac-toe-pro/
 ├── .gitignore
 ├── Dockerfile
 ├── Jenkinsfile
+├── jenkins_cicd.sh
+├── openapi.yaml
 ├── docker-compose.yml
+├── package.json
 ```
 
 ## **API Endpoints**
 
 | Endpoint                          | Method | Description                                                                           |
-| --------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+|-----------------------------------|--------|---------------------------------------------------------------------------------------|
 | `/auth/register`                  | POST   | Register a new user with email, password, and username.                               |
 | `/auth/login`                     | POST   | Login a user and generate a JWT token.                                                |
 | `/auth/forgot-password`           | POST   | Verify if a user with the given email exists.                                         |
@@ -431,7 +435,7 @@ tic-tac-toe-pro/
 #### **User Schema**
 
 | Field            | Type   | Description                         |
-| ---------------- | ------ | ----------------------------------- |
+|------------------|--------|-------------------------------------|
 | `email`          | String | User's email address.               |
 | `username`       | String | User's display name.                |
 | `password`       | String | User's hashed password.             |
@@ -445,7 +449,7 @@ tic-tac-toe-pro/
 #### **Leaderboard Entry Schema**
 
 | Field         | Type   | Description                     |
-| ------------- | ------ | ------------------------------- |
+|---------------|--------|---------------------------------|
 | `username`    | String | Player's username.              |
 | `elo`         | Number | Player's ELO rating.            |
 | `totalWins`   | Number | Number of wins by the player.   |
@@ -455,7 +459,7 @@ tic-tac-toe-pro/
 ##### **Match Schema**
 
 | Field          | Type   | Description                                    |
-| -------------- | ------ | ---------------------------------------------- |
+|----------------|--------|------------------------------------------------|
 | `player`       | String | Player's username.                             |
 | `opponent`     | String | Opponent's username.                           |
 | `status`       | Object | Match status (waiting, in-progress, finished). |
