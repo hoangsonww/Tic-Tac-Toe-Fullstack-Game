@@ -138,7 +138,11 @@ const Board: React.FC<BoardProps> = ({
       handleAIMatchResult("loss");
     } else if (gameMode === "online") {
       // Handle timeout in PvP
-      setWinner(`${opponent} wins due to timeout!`);
+      setWinner(
+        opponent === null
+          ? ""
+          : `${opponent} wins due to timeout!`
+      );
       handlePVPMatchResult(opponent!);
       stopPollingMatchState();
       stopPollingTimeout();
@@ -200,6 +204,7 @@ const Board: React.FC<BoardProps> = ({
           setBoard(aiUpdatedBoard);
 
           const aiWinner = calculateWinner(aiUpdatedBoard);
+          
           if (aiWinner) {
             setWinner("AI wins!");
             handleAIMatchResult("loss"); // Player loses to AI
@@ -582,9 +587,11 @@ const Board: React.FC<BoardProps> = ({
       if (response.ok) {
         if (data.winner) {
           setWinner(
-            data.winner === username
-              ? "You win by timeout!"
-              : `${opponent} wins by timeout!`,
+            data.winner === null
+              ? "Match ended due to timeout - Please try again"
+              : data.winner === username
+                ? "You win by timeout!"
+                : `${opponent} wins by timeout!`
           );
           handlePVPMatchResult(data.winner);
           stopPollingMatchState();
