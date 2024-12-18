@@ -802,13 +802,64 @@ router.post("/match/timeout", authenticate, async (req, res) => {
     const timeElapsed = currentTime - lastMoveTime;
 
     if (timeElapsed > TIMEOUT_DURATION) {
+      // Determine winner and loser based on timeout
+      const winner = match.player === player ? match.opponent : match.player;
+      const loser = match.player === player ? match.player : match.opponent;
+
+      // Fetch leaderboard entries for both players
+      const winnerEntry = (await LeaderboardEntry.findOne({ username: winner })) || {
+        username: winner,
+        elo: BASE_ELO,
+        totalWins: 0,
+        totalLosses: 0,
+        totalDraws: 0,
+      };
+
+      const loserEntry = (await LeaderboardEntry.findOne({ username: loser })) || {
+        username: loser,
+        elo: BASE_ELO,
+        totalWins: 0,
+        totalLosses: 0,
+        totalDraws: 0,
+      };
+
+      // Calculate ELO changes
+      const newWinnerElo = calculateElo(winnerEntry.elo, loserEntry.elo, "win", "human");
+      const newLoserElo = calculateElo(loserEntry.elo, winnerEntry.elo, "loss", "human");
+
+      // Update leaderboard stats for winner
+      await LeaderboardEntry.findOneAndUpdate(
+        { username: winner },
+        {
+          $set: { elo: newWinnerElo },
+          $inc: { totalWins: 1 },
+        },
+        { upsert: true, new: true }
+      );
+
+      // Update leaderboard stats for loser
+      await LeaderboardEntry.findOneAndUpdate(
+        { username: loser },
+        {
+          $set: { elo: newLoserElo },
+          $inc: { totalLosses: 1 },
+        },
+        { upsert: true, new: true }
+      );
+
+      // Update user stats if needed
+      await updateUserStats(winner, newWinnerElo, "win");
+      await updateUserStats(loser, newLoserElo, "loss");
+
+      // Finalize match status in the database
       match.status = "complete";
-      match.winner = match.player === player ? match.opponent : match.player;
+      match.winner = winner;
       await match.save();
 
       return res.status(200).json({
         message: "Timeout! Match completed.",
-        winner: match.winner,
+        winner,
+        loser,
         elapsedTime: timeElapsed,
       });
     }
