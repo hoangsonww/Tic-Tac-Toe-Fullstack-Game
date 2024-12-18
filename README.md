@@ -188,6 +188,10 @@ The game page also allows users to play against friends locally on the same devi
 
 The game page also enables users to play against other players online in real-time matches.
 
+**Demo Video**:
+
+![Demo GIF](./images/demo.gif)
+
 **Pre-Matchmaking**
 
 <p align="center">
