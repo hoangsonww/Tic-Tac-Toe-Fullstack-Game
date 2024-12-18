@@ -59,7 +59,7 @@
     "backend": "cd backend && npm start",
     "frontend": "cd frontend && npm start",
     "dev": "cd backend && npm start",
-    "format": "prettier --write \"**/*.{js,ts,tsx,json,css,html,md}\""
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,css,html}\""
   },
   "eslintConfig": {
     "extends": [
