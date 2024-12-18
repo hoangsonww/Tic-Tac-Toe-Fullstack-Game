@@ -863,7 +863,7 @@ const calculateElo = (playerElo, opponentElo, result, difficulty) => {
     return Math.max(0, newElo);
   } else {
     // Human opponent logic using standard ELO formula
-    const K = 290; // ELO K-factor for human matches
+    const K = 220; // ELO K-factor for human matches
     const expectedScore =
       1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400));
     let actualScore;
