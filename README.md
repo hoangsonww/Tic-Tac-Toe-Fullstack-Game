@@ -188,11 +188,13 @@ The game page also allows users to play against friends locally on the same devi
 
 The game page also enables users to play against other players online in real-time matches.
 
-**Demo Video**:
+**Demo GIF**:
 
 <p align="center">
   <img src="./images/demo.gif" alt="Demo Video">
 </p>
+
+> Our apologies for the low quality of the GIF. Please visit the live app to experience the real-time online gameplay! 🎮
 
 **Pre-Matchmaking**
 
