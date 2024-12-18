@@ -146,7 +146,7 @@ The game page allows users to play Tic Tac Toe against friends or AI, with real-
   <img src="images/game-dark.png" alt="Game Page (Dark Mode)" width="100%" style="border-radius: 8px">
 </p>
 
-#### Game Play
+### Game Play
 
 The game page features a responsive game board with real-time updates for player moves and game results.
 
@@ -154,7 +154,7 @@ The game page features a responsive game board with real-time updates for player
   <img src="images/gameplay.png" alt="Game Play" width="100%" style="border-radius: 8px">
 </p>
 
-#### Player vs AI Mode
+### Player vs AI Mode
 
 The game page allows users to play against an AI opponent with varying difficulty levels (easy, medium, hard).
 
@@ -166,7 +166,7 @@ The game page allows users to play against an AI opponent with varying difficult
   <img src="images/ai-dark.png" alt="AI Difficulty Levels" width="100%" style="border-radius: 8px">
 </p>
 
-#### Local Player vs. Player Mode
+### Local Player vs. Player Mode
 
 The game page also allows users to play against friends locally on the same device.
 
@@ -184,13 +184,15 @@ The game page also allows users to play against friends locally on the same devi
   <img src="images/8x8.png" alt="8x8 Board Size" width="100%" style="border-radius: 8px">
 </p>
 
-#### Online Player vs. Player Mode
+### Online Player vs. Player Mode
 
 The game page also enables users to play against other players online in real-time matches.
 
 **Demo Video**:
 
-![Demo GIF](./images/demo.gif)
+<p align="center">
+  <img src="./images/demo.gif" alt="Demo Video">
+</p>
 
 **Pre-Matchmaking**
 
