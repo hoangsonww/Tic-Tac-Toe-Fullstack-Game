@@ -807,7 +807,9 @@ router.post("/match/timeout", authenticate, async (req, res) => {
       const loser = match.player === player ? match.player : match.opponent;
 
       // Fetch leaderboard entries for both players
-      const winnerEntry = (await LeaderboardEntry.findOne({ username: winner })) || {
+      const winnerEntry = (await LeaderboardEntry.findOne({
+        username: winner,
+      })) || {
         username: winner,
         elo: BASE_ELO,
         totalWins: 0,
@@ -815,7 +817,9 @@ router.post("/match/timeout", authenticate, async (req, res) => {
         totalDraws: 0,
       };
 
-      const loserEntry = (await LeaderboardEntry.findOne({ username: loser })) || {
+      const loserEntry = (await LeaderboardEntry.findOne({
+        username: loser,
+      })) || {
         username: loser,
         elo: BASE_ELO,
         totalWins: 0,
@@ -824,8 +828,18 @@ router.post("/match/timeout", authenticate, async (req, res) => {
       };
 
       // Calculate ELO changes
-      const newWinnerElo = calculateElo(winnerEntry.elo, loserEntry.elo, "win", "human");
-      const newLoserElo = calculateElo(loserEntry.elo, winnerEntry.elo, "loss", "human");
+      const newWinnerElo = calculateElo(
+        winnerEntry.elo,
+        loserEntry.elo,
+        "win",
+        "human",
+      );
+      const newLoserElo = calculateElo(
+        loserEntry.elo,
+        winnerEntry.elo,
+        "loss",
+        "human",
+      );
 
       // Update leaderboard stats for winner
       await LeaderboardEntry.findOneAndUpdate(
@@ -834,7 +848,7 @@ router.post("/match/timeout", authenticate, async (req, res) => {
           $set: { elo: newWinnerElo },
           $inc: { totalWins: 1 },
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       // Update leaderboard stats for loser
@@ -844,7 +858,7 @@ router.post("/match/timeout", authenticate, async (req, res) => {
           $set: { elo: newLoserElo },
           $inc: { totalLosses: 1 },
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       // Update user stats if needed

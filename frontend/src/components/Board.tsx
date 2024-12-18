@@ -138,11 +138,7 @@ const Board: React.FC<BoardProps> = ({
       handleAIMatchResult("loss");
     } else if (gameMode === "online") {
       // Handle timeout in PvP
-      setWinner(
-        opponent === null
-          ? ""
-          : `${opponent} wins due to timeout!`
-      );
+      setWinner(opponent === null ? "" : `${opponent} wins due to timeout!`);
       handlePVPMatchResult(opponent!);
       stopPollingMatchState();
       stopPollingTimeout();
@@ -204,7 +200,7 @@ const Board: React.FC<BoardProps> = ({
           setBoard(aiUpdatedBoard);
 
           const aiWinner = calculateWinner(aiUpdatedBoard);
-          
+
           if (aiWinner) {
             setWinner("AI wins!");
             handleAIMatchResult("loss"); // Player loses to AI
@@ -342,7 +338,7 @@ const Board: React.FC<BoardProps> = ({
     const token = sessionStorage.getItem("token");
 
     if (!token || !username) {
-      alert("You must be logged in to start matchmaking.");
+      alert("You must be logged in to start matchmaking with another player.");
       setIsMatchmaking(false);
       return;
     }
@@ -591,7 +587,7 @@ const Board: React.FC<BoardProps> = ({
               ? "Match ended due to timeout - Please try again"
               : data.winner === username
                 ? "You win by timeout!"
-                : `${opponent} wins by timeout!`
+                : `${opponent} wins by timeout!`,
           );
           handlePVPMatchResult(data.winner);
           stopPollingMatchState();
@@ -679,11 +675,21 @@ const Board: React.FC<BoardProps> = ({
             {gameMode === "online" && opponent ? (
               <>
                 You (
-                <span style={{ color: "#1976d2", fontWeight: "bold" }}>
+                <span
+                  style={{
+                    color: playerSymbol === "X" ? "#1976d2" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
                   {playerSymbol}
                 </span>
                 ) vs {opponent} (
-                <span style={{ color: "red", fontWeight: "bold" }}>
+                <span
+                  style={{
+                    color: opponentSymbol === "X" ? "#1976d2" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
                   {opponentSymbol}
                 </span>
                 )
