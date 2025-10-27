@@ -42,7 +42,7 @@ The Tic Tac Toe Pro Game is live and accessible at the following URLs:
 Feel free to explore the app, play a few games, and check out the leaderboard!
 
 > [!IMPORTANT]
-> **Note**: The app's backend is hosted on Render's free tier, which may experience cold start delays. It may take up to 2 seconds to process backend requests, such as login, registration, online PvP, and/or leaderboard functionalities. Please be patient if you encounter any initial delays.
+> **Note**: The app's backend is hosted on Render's free tier, which may experience cold start delays. Sometimes, it may take up to 30-60 seconds to process backend requests, such as login, registration, online PvP, and/or leaderboard functionalities. Please be patient if you encounter any initial delays.
 
 ### Deployment Statuses
 
