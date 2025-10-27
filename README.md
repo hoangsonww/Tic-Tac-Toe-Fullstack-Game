@@ -2,6 +2,7 @@
 
 Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack application featuring multiplayer Tic Tac Toe gameplay, AI integration, user profiles, leaderboards, and more. The backend is built with **Node.js**, **Express**, and **MongoDB**, while the frontend leverages **React** and **Material-UI** for a polished, responsive user interface.
 
+> [!NOTE]
 > **Tech Stack**: **MERN-T** (MongoDB, **Express**, **React**, Node.js with TypeScript)
 
 ## **Table of Contents**
@@ -40,7 +41,8 @@ The Tic Tac Toe Pro Game is live and accessible at the following URLs:
 
 Feel free to explore the app, play a few games, and check out the leaderboard!
 
-> **Note**: The app's backend is hosted on Render's free tier, which may experience cold start delays. It may take up to 2 seconds to process backend requests, such as login, registration, online PvP, and/or leaderboard functionalities. Please be patient if you encounter any initial delays.
+> [!IMPORTANT]
+> **Note**: The app's backend is hosted on Render's free tier, which may experience cold start delays. Sometimes, it may take up to 30-60 seconds to process backend requests, such as login, registration, online PvP, and/or leaderboard functionalities. Please be patient if you encounter any initial delays.
 
 ### Deployment Statuses
 
@@ -194,6 +196,7 @@ The game page also enables users to play against other players online in real-ti
   <img src="./images/demo.gif" alt="Demo Video">
 </p>
 
+> [!TIP]
 > Our apologies for the low quality of the GIF. Please visit the live app to experience the real-time online gameplay! 🎮
 
 **Pre-Matchmaking**
