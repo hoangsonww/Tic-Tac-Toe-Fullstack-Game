@@ -1,3 +1,4 @@
+const { validateLeaderboardMatch } = require("../middleware/validation");
 const express = require("express");
 const LeaderboardEntry = require("../models/LeaderboardEntry");
 const User = require("../models/User");
@@ -134,18 +135,8 @@ const updateUserStats = async (username, elo, result) => {
  *       500:
  *         description: Failed to save match result
  */
-router.post("/match", authenticate, async (req, res) => {
+router.post("/match", authenticate, validateLeaderboardMatch, async (req, res) => {
   const { player, opponent, result, difficulty } = req.body;
-
-  if (
-    !player ||
-    !result ||
-    !difficulty ||
-    !["win", "loss", "draw"].includes(result) ||
-    !["easy", "medium", "hard", "impossible"].includes(difficulty.toLowerCase())
-  ) {
-    return res.status(400).json({ error: "Invalid data" });
-  }
 
   try {
     const playerEntry = await LeaderboardEntry.findOneAndUpdate(
@@ -163,7 +154,7 @@ router.post("/match", authenticate, async (req, res) => {
 
     const opponentElo = opponent
       ? (await LeaderboardEntry.findOne({ username: opponent }))?.elo ||
-        BASE_ELO
+      BASE_ELO
       : BASE_ELO;
     const newElo = calculateElo(
       playerEntry.elo,
