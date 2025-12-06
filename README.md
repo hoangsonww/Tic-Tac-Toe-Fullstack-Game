@@ -2,6 +2,7 @@
 
 Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack application featuring multiplayer Tic Tac Toe gameplay, AI integration, user profiles, leaderboards, and more. The backend is built with **Node.js**, **Express**, and **MongoDB**, while the frontend leverages **React** and **Material-UI** for a polished, responsive user interface.
 
+> [!NOTE]
 > **_The MERN-T Stack_**: **MongoDB**, **Express**, **React**, **Node.js** with **TypeScript**
 
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
@@ -138,6 +139,9 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 ## **User Interface**
 
 The **Tic Tac Toe Pro Game** frontend features an intuitive and visually appealing UI, offering a seamless experience across devices. Below are placeholders for screenshots of the app:
+
+> [!TIP]
+> The UI will change and be improved over time. Please visit the live app for the most up-to-date experience! **[Live App](https://tictactoe-ai-app.vercel.app/)**
 
 ### Landing Page
 
