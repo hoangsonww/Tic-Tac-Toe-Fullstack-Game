@@ -8,7 +8,7 @@ info:
     url: https://sonnguyenhoang.com
     email: hoangson091104@gmail.com
 servers:
-  - url: https://tic-tac-toe-fullstack-game.onrender.com
+  - url: https://tic-tac-toe-backend-api.vercel.app
 paths:
   /auth/register:
     post:

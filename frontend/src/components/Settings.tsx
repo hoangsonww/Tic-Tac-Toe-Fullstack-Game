@@ -5,19 +5,25 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  TextField,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Typography,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Button,
   useMediaQuery,
   Tooltip,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Switch,
+  Paper,
+  Stack,
+  Divider,
+  ToggleButtonGroup,
+  ToggleButton,
+  Chip,
+  Collapse,
+  Button,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
 import { useTheme } from "@mui/system";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 interface SettingsProps {
   boardSize: number;
@@ -52,6 +58,7 @@ const Settings: React.FC<SettingsProps> = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [inputTimer, setInputTimer] = useState(timerDuration);
+  const [showSettings, setShowSettings] = useState(true);
 
   const handleBoardSizeChange = (event: SelectChangeEvent<number>) => {
     const newSize = parseInt(event.target.value as unknown as string, 10);
@@ -67,10 +74,13 @@ const Settings: React.FC<SettingsProps> = ({
     }
   };
 
-  const handleGameModeChange = (
-    event: SelectChangeEvent<"ai" | "local" | "online">,
+  const handleToggleGameMode = (
+    _event: React.MouseEvent<HTMLElement>,
+    value: "ai" | "local" | "online" | null,
   ) => {
-    setGameMode(event.target.value as "ai" | "local" | "online");
+    if (value) {
+      setGameMode(value);
+    }
   };
 
   const boardSizeOptions = [
@@ -85,226 +95,174 @@ const Settings: React.FC<SettingsProps> = ({
   const isOnlineMode = gameMode === "online";
 
   return (
-    <Box
+    <Paper
+      elevation={0}
       sx={{
-        textAlign: "center",
-        mb: 0,
-        p: isSmallScreen ? 2 : 4,
-        display: "flex",
-        flexDirection: "column",
-        gap: 3,
-        alignItems: "center",
+        width: "100%",
+        maxWidth: 720,
+        mx: "auto",
+        borderRadius: 3,
+        marginBottom: 4,
+        p: isSmallScreen ? 2 : 3,
+        background:
+          theme.palette.mode === "dark"
+            ? "linear-gradient(135deg, #1f2937 0%, #111827 100%)"
+            : "linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%)",
+        border: `1px solid ${
+          theme.palette.mode === "dark" ? "#2d3748" : "#e0e7ff"
+        }`,
       }}
     >
-      {/* Game Mode Settings */}
-      <FormControl sx={{ minWidth: 200 }}>
-        <InputLabel id="game-mode-label" sx={{ fontFamily: "Poppins" }}>
-          Game Mode
-        </InputLabel>
-        <Select
-          labelId="game-mode-label"
-          value={gameMode}
-          onChange={handleGameModeChange}
-          label="Game Mode"
-          variant="outlined"
-          sx={{
-            fontFamily: "Poppins",
-            ".MuiOutlinedInput-notchedOutline": {
-              borderColor:
-                theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor:
-                theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-            },
-            ".MuiSvgIcon-root": {
-              color: theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-            },
-          }}
-        >
-          <MenuItem value="ai" sx={{ fontFamily: "Poppins" }}>
-            Play Against AI
-          </MenuItem>
-          <MenuItem value="local" sx={{ fontFamily: "Poppins" }}>
-            Play Locally
-          </MenuItem>
-          <MenuItem value="online" sx={{ fontFamily: "Poppins" }}>
-            Play Online
-          </MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Board Size Settings */}
-      <Tooltip
-        title={
-          isOnlineMode
-            ? "Board size is fixed at 4x4 in online mode."
-            : "Choose a board size for the game."
-        }
-      >
-        <FormControl sx={{ minWidth: 200 }} disabled={isOnlineMode}>
-          <InputLabel id="board-size-label" sx={{ fontFamily: "Poppins" }}>
-            Board Size
-          </InputLabel>
-          <Select
-            labelId="board-size-label"
-            value={boardSize}
-            onChange={handleBoardSizeChange}
-            label="Board Size"
-            variant="outlined"
-            sx={{
-              fontFamily: "Poppins",
-              ".MuiOutlinedInput-notchedOutline": {
-                borderColor:
-                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-              },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor:
-                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-              },
-              ".MuiSvgIcon-root": {
-                color: theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-              },
-            }}
-          >
-            {boardSizeOptions.map((option) => (
-              <MenuItem
-                key={option.value}
-                value={option.value}
-                sx={{ fontFamily: "Poppins" }}
-              >
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Tooltip>
-
-      {/* AI Difficulty Settings */}
-      {gameMode === "ai" && (
-        <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel
-            id="ai-difficulty-label"
-            sx={{
-              fontFamily: "Poppins",
-            }}
-          >
-            AI Difficulty
-          </InputLabel>
-          <Select
-            labelId="ai-difficulty-label"
-            value={aiDifficulty}
-            onChange={(e) => setAIDifficulty(e.target.value as any)}
-            label="AI Difficulty"
-            variant="outlined"
-            sx={{
-              fontFamily: "Poppins",
-              ".MuiOutlinedInput-notchedOutline": {
-                borderColor:
-                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-              },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor:
-                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-              },
-              ".MuiSvgIcon-root": {
-                color: theme.palette.mode === "dark" ? "#ffffff" : "#000000",
-              },
-            }}
-          >
-            <MenuItem value="easy" sx={{ fontFamily: "Poppins" }}>
-              Easy
-            </MenuItem>
-            <MenuItem value="medium" sx={{ fontFamily: "Poppins" }}>
-              Medium
-            </MenuItem>
-            <MenuItem value="hard" sx={{ fontFamily: "Poppins" }}>
-              Hard
-            </MenuItem>
-            <MenuItem value="impossible" sx={{ fontFamily: "Poppins" }}>
-              Impossible
-            </MenuItem>
-          </Select>
-        </FormControl>
-      )}
-
-      {/* Timer Settings */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: isSmallScreen ? "column" : "row",
           alignItems: "center",
-          gap: 2,
+          justifyContent: "space-between",
+          mb: 2,
         }}
       >
-        {/*<Tooltip*/}
-        {/*  title={*/}
-        {/*    isOnlineMode*/}
-        {/*      ? "Timer is disabled in online mode."*/}
-        {/*      : "Enable or disable the timer for the game."*/}
-        {/*  }*/}
-        {/*>*/}
-        {/*  <Box*/}
-        {/*    sx={{*/}
-        {/*      display: "flex",*/}
-        {/*      alignItems: "center",*/}
-        {/*      gap: 1,*/}
-        {/*      opacity: isOnlineMode ? 0.5 : 1,*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <Typography variant="body1" sx={{ fontFamily: "Poppins" }}>*/}
-        {/*      Enable Timer*/}
-        {/*    </Typography>*/}
-        {/*    <Switch*/}
-        {/*      checked={isTimerEnabled}*/}
-        {/*      onChange={(e) => setIsTimerEnabled(e.target.checked)}*/}
-        {/*      disabled={isOnlineMode}*/}
-        {/*    />*/}
-        {/*  </Box>*/}
-        {/*</Tooltip>*/}
-        {/*{isTimerEnabled && !isOnlineMode && (*/}
-        {/*  <Box*/}
-        {/*    sx={{*/}
-        {/*      display: "flex",*/}
-        {/*      flexDirection: isSmallScreen ? "column" : "row",*/}
-        {/*      gap: 2,*/}
-        {/*      alignItems: "center",*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <TextField*/}
-        {/*      label="Timer (seconds)"*/}
-        {/*      type="number"*/}
-        {/*      value={inputTimer}*/}
-        {/*      onChange={(e) => setInputTimer(Number(e.target.value))}*/}
-        {/*      inputProps={{*/}
-        {/*        min: 10,*/}
-        {/*        max: 300,*/}
-        {/*        style: {*/}
-        {/*          fontFamily: "Poppins, sans-serif",*/}
-        {/*        },*/}
-        {/*      }}*/}
-        {/*      InputLabelProps={{*/}
-        {/*        style: {*/}
-        {/*          fontFamily: "Poppins, sans-serif",*/}
-        {/*        },*/}
-        {/*      }}*/}
-        {/*      sx={{*/}
-        {/*        fontFamily: "Poppins",*/}
-        {/*        width: isSmallScreen ? "100%" : 200,*/}
-        {/*      }}*/}
-        {/*    />*/}
-        {/*    <Button*/}
-        {/*      variant="contained"*/}
-        {/*      color="primary"*/}
-        {/*      onClick={handleSetTimer}*/}
-        {/*      sx={{ fontFamily: "Poppins" }}*/}
-        {/*    >*/}
-        {/*      Set Timer*/}
-        {/*    </Button>*/}
-        {/*  </Box>*/}
-        {/*)}*/}
+        <Typography
+          variant="h6"
+          sx={{ fontFamily: "Poppins", fontWeight: "bold" }}
+        >
+          Settings
+        </Typography>
+        <Button
+          size="small"
+          startIcon={showSettings ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          onClick={() => setShowSettings((prev) => !prev)}
+          sx={{ fontFamily: "Poppins" }}
+        >
+          {showSettings ? "Hide" : "Show"}
+        </Button>
       </Box>
-    </Box>
+      <Collapse in={showSettings} timeout="auto" unmountOnExit>
+        <Stack spacing={3}>
+          <Box>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontFamily: "Poppins", textTransform: "uppercase", mb: 1 }}
+              color="text.secondary"
+            >
+              Game Mode
+            </Typography>
+            <ToggleButtonGroup
+              color="primary"
+              exclusive
+              value={gameMode}
+              onChange={handleToggleGameMode}
+              fullWidth
+            >
+              <ToggleButton value="ai" sx={{ fontFamily: "Poppins" }}>
+                <SmartToyIcon fontSize="small" sx={{ mr: 1 }} />
+                AI
+              </ToggleButton>
+              <ToggleButton value="local" sx={{ fontFamily: "Poppins" }}>
+                <EmojiPeopleIcon fontSize="small" sx={{ mr: 1 }} />
+                Local
+              </ToggleButton>
+              <ToggleButton value="online" sx={{ fontFamily: "Poppins" }}>
+                <PeopleAltIcon fontSize="small" sx={{ mr: 1 }} />
+                Online
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          <Divider flexItem>
+            <Chip
+              label="Board"
+              size="small"
+              sx={{ fontFamily: "Poppins", letterSpacing: 0.5 }}
+            />
+          </Divider>
+
+          <Tooltip
+            title={
+              isOnlineMode
+                ? "Board size is fixed at 4x4 in online mode."
+                : "Choose a board size for the game."
+            }
+          >
+            <FormControl sx={{ minWidth: 200 }} disabled={isOnlineMode}>
+              <InputLabel id="board-size-label" sx={{ fontFamily: "Poppins" }}>
+                Board Size
+              </InputLabel>
+              <Select
+                labelId="board-size-label"
+                value={boardSize}
+                onChange={handleBoardSizeChange}
+                label="Board Size"
+                variant="outlined"
+                sx={{
+                  fontFamily: "Poppins",
+                  backgroundColor:
+                    theme.palette.mode === "dark" ? "#0f172a" : "#fff",
+                }}
+              >
+                {boardSizeOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    sx={{ fontFamily: "Poppins" }}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Tooltip>
+
+          {/* AI Difficulty Settings */}
+          {gameMode === "ai" && (
+            <FormControl sx={{ minWidth: 200 }}>
+              <InputLabel
+                id="ai-difficulty-label"
+                sx={{
+                  fontFamily: "Poppins",
+                }}
+              >
+                AI Difficulty
+              </InputLabel>
+              <Select
+                labelId="ai-difficulty-label"
+                value={aiDifficulty}
+                onChange={(e) => setAIDifficulty(e.target.value as any)}
+                label="AI Difficulty"
+                variant="outlined"
+                sx={{
+                  fontFamily: "Poppins",
+                  ".MuiOutlinedInput-notchedOutline": {
+                    borderColor:
+                      theme.palette.mode === "dark" ? "#ffffff" : "#000000",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor:
+                      theme.palette.mode === "dark" ? "#ffffff" : "#000000",
+                  },
+                  ".MuiSvgIcon-root": {
+                    color:
+                      theme.palette.mode === "dark" ? "#ffffff" : "#000000",
+                  },
+                }}
+              >
+                <MenuItem value="easy" sx={{ fontFamily: "Poppins" }}>
+                  Easy
+                </MenuItem>
+                <MenuItem value="medium" sx={{ fontFamily: "Poppins" }}>
+                  Medium
+                </MenuItem>
+                <MenuItem value="hard" sx={{ fontFamily: "Poppins" }}>
+                  Hard
+                </MenuItem>
+                <MenuItem value="impossible" sx={{ fontFamily: "Poppins" }}>
+                  Impossible
+                </MenuItem>
+              </Select>
+            </FormControl>
+          )}
+        </Stack>
+      </Collapse>
+    </Paper>
   );
 };
 

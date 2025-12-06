@@ -3,7 +3,31 @@
 Welcome to the **Tic Tac Toe Pro Game**! This is a comprehensive, full-stack application featuring multiplayer Tic Tac Toe gameplay, AI integration, user profiles, leaderboards, and more. The backend is built with **Node.js**, **Express**, and **MongoDB**, while the frontend leverages **React** and **Material-UI** for a polished, responsive user interface.
 
 > [!NOTE]
-> **Tech Stack**: **MERN-T** (MongoDB, **Express**, **React**, Node.js with TypeScript)
+> **_The MERN-T Stack_**: **MongoDB**, **Express**, **React**, **Node.js** with **TypeScript**
+
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Material-UI](https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=mui&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-000000?style=for-the-badge&logo=websockets&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-green?style=for-the-badge&logo=express&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
+![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
+![Render](https://img.shields.io/badge/Render-0075A6?style=for-the-badge&logo=render&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-6CA0DC?style=for-the-badge&logo=task&logoColor=white)
 
 ## **Table of Contents**
 
@@ -49,6 +73,7 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 ![Frontend Vercel](https://img.shields.io/badge/Frontend%20Vercel-Up-brightgreen?style=flat-square&logo=vercel)
 ![Backend Render](https://img.shields.io/badge/Backend%20Render-Up-brightgreen?style=flat-square&logo=render)
 ![MongoDB Atlas](https://img.shields.io/badge/MongoDB%20Atlas-Connected-brightgreen?style=flat-square&logo=mongodb)
+![Socket.io](https://img.shields.io/badge/Socket.io-Active-brightgreen?style=flat-square&logo=socket.io)
 ![Netlify Backup](https://img.shields.io/badge/Netlify%20Backup-Ready-brightgreen?style=flat-square&logo=netlify)
 ![Deployment Docker](https://img.shields.io/badge/Deployment%20Docker-Running-brightgreen?style=flat-square&logo=docker)
 ![Swagger Documentation](https://img.shields.io/badge/Swagger%20Docs-Available-brightgreen?style=flat-square&logo=swagger)
@@ -115,6 +140,9 @@ Feel free to explore the app, play a few games, and check out the leaderboard!
 ## **User Interface**
 
 The **Tic Tac Toe Pro Game** frontend features an intuitive and visually appealing UI, offering a seamless experience across devices. Below are placeholders for screenshots of the app:
+
+> [!TIP]
+> The UI will change and be improved over time. Please visit the live app for the most up-to-date experience! **[Live App](https://tictactoe-ai-app.vercel.app/)**
 
 ### Landing Page
 

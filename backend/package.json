@@ -16,10 +16,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "@types/ws": "^8.5.13"
   },
   "keywords": [
     "tic-tac-toe",

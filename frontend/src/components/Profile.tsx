@@ -8,6 +8,10 @@ import {
   Avatar,
   Button,
   InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   GitHub,
@@ -38,38 +42,45 @@ const Profile: React.FC = () => {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [currentUserUsername, setCurrentUserUsername] = useState("");
   const [isCurrentUser, setIsCurrentUser] = useState(true);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [noResults, setNoResults] = useState(false);
+  const [infoModal, setInfoModal] = useState<{
+    open: boolean;
+    message: string;
+  }>({
+    open: false,
+    message: "",
+  });
 
-  const defaultAvatars = [
-    "/OIP.jpg",
-    "/OIP2.webp",
-    "/OIP3.png",
-    "/OIP4.png",
-    "/OIP5.png",
-    "/OIP6.webp",
-    "/OIP7.webp",
-    "/OIP8.webp",
-    "/OIP9.webp",
-    "/OIP10.webp",
-    "/OIP11.webp",
-    "/OIP12.webp",
-    "/OIP13.webp",
-    "/OIP14.webp",
-    "/OIP15.webp",
-    "/OIP16.webp",
-    "/OIP17.webp",
-    "/OIP18.webp",
-    "/OIP19.webp",
-    "/OIP20.webp",
-  ];
-  const lastDefaultAvatarIndexRef = useRef<number | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentDefaultAvatar, setCurrentDefaultAvatar] = useState<string>(
-    () => {
-      const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
-      lastDefaultAvatarIndexRef.current = randomIndex;
-      return defaultAvatars[randomIndex];
-    },
+  const defaultAvatars = React.useMemo(
+    () => [
+      "/OIP.jpg",
+      "/OIP2.webp",
+      "/OIP3.png",
+      "/OIP4.png",
+      "/OIP5.png",
+      "/OIP6.webp",
+      "/OIP7.webp",
+      "/OIP8.webp",
+      "/OIP9.webp",
+      "/OIP10.webp",
+      "/OIP11.webp",
+      "/OIP12.webp",
+      "/OIP13.webp",
+      "/OIP14.webp",
+      "/OIP15.webp",
+      "/OIP16.webp",
+      "/OIP17.webp",
+      "/OIP18.webp",
+      "/OIP19.webp",
+      "/OIP20.webp",
+    ],
+    [],
   );
+  const lastDefaultAvatarIndexRef = useRef<number | null>(null);
+  const [currentDefaultAvatar, setCurrentDefaultAvatar] = useState<string>("");
 
   // Fetch current user's username on mount
   useEffect(() => {
@@ -81,11 +92,15 @@ const Profile: React.FC = () => {
       })
       .then((response) => {
         setCurrentUserUsername(response.data.username);
+        setProfile(response.data);
+        const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+        lastDefaultAvatarIndexRef.current = randomIndex;
+        setCurrentDefaultAvatar(defaultAvatars[randomIndex]);
       })
       .catch((error) => {
         console.error("Failed to fetch current user's username:", error);
       });
-  }, []);
+  }, [defaultAvatars]);
 
   // Fetch profile data based on searchQuery, with debounce of 750ms
   useEffect(() => {
@@ -94,44 +109,70 @@ const Profile: React.FC = () => {
     }
 
     searchTimeoutRef.current = setTimeout(() => {
-      setLoading(true);
+      setSearchLoading(true);
+      setNoResults(false);
       setError("");
 
-      let endpoint = "/profile";
       const headers = {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
-      if (searchQuery.trim() !== "") {
-        endpoint = `/profile/search?username=${encodeURIComponent(
-          searchQuery.trim(),
-        )}`;
+      if (searchQuery.trim() === "") {
+        // Load current user profile
+        setLoading(true);
+        api
+          .get("/profile", { headers })
+          .then((response) => {
+            setProfile(response.data);
+            setIsCurrentUser(true);
+            setSearchResults([]);
+            setShowSearchResults(false);
+          })
+          .catch((error) => {
+            console.error("Failed to fetch profile:", error);
+            setError("Failed to load profile data.");
+            setProfile(null);
+          })
+          .finally(() => {
+            setLoading(false);
+            setSearchLoading(false);
+          });
+        return;
       }
 
       api
-        .get(endpoint, {
-          headers,
-        })
+        .get(
+          `/profile/search?username=${encodeURIComponent(searchQuery.trim())}`,
+          {
+            headers,
+          },
+        )
         .then((response) => {
-          setProfile(response.data);
-          setError("");
-
-          if (searchQuery.trim() === "") {
-            setIsCurrentUser(true);
-          } else {
-            setIsCurrentUser(response.data.username === currentUserUsername);
+          const payload = response.data || {};
+          let results: any[] = [];
+          if (Array.isArray(payload)) {
+            results = payload;
+          } else if (Array.isArray(payload.results)) {
+            results = payload.results;
+          } else if (payload.username) {
+            results = [payload];
           }
+          setSearchResults(results);
+          setShowSearchResults(true);
+          setNoResults(results.length === 0);
         })
         .catch((error) => {
-          console.error("Failed to fetch profile:", error);
+          console.error("Failed to fetch profile search results:", error);
           if (error.response && error.response.status === 404) {
-            setError("User not found.");
+            setSearchResults([]);
+            setNoResults(true);
+            setShowSearchResults(true);
           } else {
-            setError("Failed to load profile data.");
+            setError("Failed to load search results.");
+            setShowSearchResults(false);
           }
-          setProfile(null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => setSearchLoading(false));
     }, 750);
 
     return () => {
@@ -151,6 +192,51 @@ const Profile: React.FC = () => {
     setProfile((prev: any) => ({ ...prev, [field]: value }));
   };
 
+  const loadProfileByUsername = async (username: string) => {
+    setLoading(true);
+    setError("");
+    try {
+      const headers = {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      };
+      const response = await api.get(
+        `/profile/search?username=${encodeURIComponent(username)}&exact=true`,
+        { headers },
+      );
+      const payload = response.data || {};
+      const user =
+        (Array.isArray(payload.results) && payload.results[0]) ||
+        payload.results ||
+        payload;
+      if (!user || !user.username) {
+        setProfile(null);
+        setError("User not found.");
+        return;
+      }
+      setProfile(user);
+      setIsCurrentUser(user.username === currentUserUsername);
+      const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+      lastDefaultAvatarIndexRef.current = randomIndex;
+      setCurrentDefaultAvatar(defaultAvatars[randomIndex]);
+    } catch (err) {
+      console.error("Failed to load profile by username:", err);
+      setError("Failed to load profile data.");
+      setProfile(null);
+    } finally {
+      setLoading(false);
+      setShowSearchResults(false);
+    }
+  };
+
+  const handleSelectSearchResult = (user: any) => {
+    setSearchQuery(user.username);
+    setShowSearchResults(false);
+    setProfile(user);
+    setIsCurrentUser(user.username === currentUserUsername);
+    setLoading(true);
+    loadProfileByUsername(user.username);
+  };
+
   // Save changes for a specific field
   const handleFieldSave = async (field: string) => {
     setSavingField(field);
@@ -163,7 +249,11 @@ const Profile: React.FC = () => {
         const selectedDate = new Date(profile.dob);
 
         if (selectedDate < minDate || selectedDate > maxDate) {
-          alert("Date of Birth must be between January 1, 1900, and today.");
+          setInfoModal({
+            open: true,
+            message:
+              "Date of Birth must be between January 1, 1900, and today.",
+          });
           setSavingField(null); // Reset the saving state
           return; // Do not proceed with saving
         }
@@ -189,7 +279,10 @@ const Profile: React.FC = () => {
         },
       });
 
-      alert(`${field.toUpperCase()} updated successfully!`);
+      setInfoModal({
+        open: true,
+        message: `${field.toUpperCase()} updated successfully!`,
+      });
       setIsEditing((prev) => ({ ...prev, [field]: false }));
     } catch (err) {
       console.error(`Failed to update ${field}:`, err);
@@ -245,11 +338,12 @@ const Profile: React.FC = () => {
         },
       });
 
-      alert(
-        `${
+      setInfoModal({
+        open: true,
+        message: `${
           platform.charAt(0).toUpperCase() + platform.slice(1)
         } updated successfully!`,
-      );
+      });
       setIsEditing((prev) => ({ ...prev, [platform]: false }));
     } catch (err) {
       console.error(`Failed to update ${platform}:`, err);
@@ -295,6 +389,7 @@ const Profile: React.FC = () => {
           minWidth: { xs: "90%", sm: 450 },
           mx: "auto",
           mb: 3,
+          position: "relative",
         }}
       >
         <TextField
@@ -309,6 +404,11 @@ const Profile: React.FC = () => {
                 <Search />
               </InputAdornment>
             ),
+            endAdornment: searchLoading ? (
+              <InputAdornment position="end">
+                <CircularProgress size={16} />
+              </InputAdornment>
+            ) : null,
           }}
           sx={{
             "& .MuiInputBase-input": {
@@ -319,6 +419,94 @@ const Profile: React.FC = () => {
             },
           }}
         />
+        {showSearchResults && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              zIndex: 10,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              mt: 1,
+              boxShadow:
+                "0 10px 30px rgba(0,0,0,0.12), 0 6px 10px rgba(0,0,0,0.08)",
+              maxHeight: 240,
+              overflowY: "auto",
+            }}
+          >
+            {searchLoading && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  px: 2,
+                  py: 1,
+                }}
+              >
+                <CircularProgress size={16} />
+                <Typography variant="body2" sx={{ fontFamily: "Poppins" }}>
+                  Searching...
+                </Typography>
+              </Box>
+            )}
+            {!searchLoading && noResults && (
+              <Box
+                sx={{
+                  px: 2,
+                  py: 1,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontFamily: "Poppins" }}
+                >
+                  No matches found.
+                </Typography>
+              </Box>
+            )}
+            {!searchLoading &&
+              searchResults.map((user) => (
+                <Box
+                  key={user.username}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    px: 2,
+                    py: 1,
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "action.hover" },
+                  }}
+                  onClick={() => handleSelectSearchResult(user)}
+                >
+                  <Avatar
+                    src={user.profilePicture}
+                    alt={user.username}
+                    sx={{ width: 32, height: 32 }}
+                  />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontFamily: "Poppins", fontWeight: 600 }}
+                    >
+                      {user.username}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontFamily: "Poppins" }}
+                    >
+                      Elo: {user.elo ?? "—"}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        )}
       </Box>
 
       {error ? (
@@ -612,6 +800,22 @@ const Profile: React.FC = () => {
           </Box>
         )
       )}
+      <Dialog
+        open={infoModal.open}
+        onClose={() => setInfoModal({ open: false, message: "" })}
+      >
+        <DialogTitle sx={{ fontFamily: "Poppins", fontWeight: "bold" }}>
+          Notice
+        </DialogTitle>
+        <DialogContent sx={{ fontFamily: "Poppins" }}>
+          {infoModal.message}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setInfoModal({ open: false, message: "" })}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
