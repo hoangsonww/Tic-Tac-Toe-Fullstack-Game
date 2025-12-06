@@ -13,6 +13,10 @@ import {
   Button,
   Switch,
   FormControlLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -32,64 +36,68 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
   toggleTheme,
 }) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [logoutMessage, setLogoutMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const getStoredToken = () =>
+    sessionStorage.getItem("token") || localStorage.getItem("token");
 
   // Token validation logic
   useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
     const validateToken = async () => {
-      const token = sessionStorage.getItem("token");
+      const token = getStoredToken();
 
       if (!token) {
-        console.warn("No token found, logging out.");
         return;
       }
 
       try {
-        const response = await fetch(
-          "https://tic-tac-toe-fullstack-game.onrender.com/auth/validate-token",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const apiBase =
+          process.env.REACT_APP_API_BASE ||
+          (typeof import.meta !== "undefined"
+            ? // @ts-ignore - Vite injects import.meta.env
+              import.meta.env?.VITE_API_BASE
+            : undefined) ||
+          "https://tic-tac-toe-backend-api.vercel.app";
+        const response = await fetch(`${apiBase}/auth/validate-token`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
-        if (!response.ok) {
+        if (response.status === 401) {
           throw new Error(`API responded with status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log("Validation response:", data);
-
-        // If the token is invalid, log out
         if (!data.valid) {
-          console.warn("Token is invalid, logging out.");
           handleLogout(
             "Your session has expired, or you are currently logged in on another browser. Please check your connectivity and log in again to continue.",
           );
         }
       } catch (error) {
-        console.error("Error validating token:", error);
-        handleLogout(
-          "Your session has expired, or you are currently logged in on another browser. Please check your connectivity and log in again to continue.",
-        );
+        // Fail silently on transient errors; only act on explicit invalid tokens.
+        console.warn("Token validation skipped due to error:", error);
       }
     };
 
-    const intervalId = setInterval(validateToken, 1000); // Validate token every 1 second
+    validateToken();
+    intervalId = setInterval(validateToken, 60_000); // validate every 60s
 
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = (message?: string) => {
-    if (message) {
-      alert(message);
-    }
     sessionStorage.removeItem("token");
-    navigate("/login");
+    if (message) {
+      setLogoutMessage(message);
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleLogoutAlt = () => {
@@ -97,7 +105,7 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
     navigate("/login");
   };
 
-  const isLoggedIn = !!sessionStorage.getItem("token");
+  const isLoggedIn = !!getStoredToken();
 
   const menuItems = [
     { label: "Home", icon: <Home />, path: "/home" },
@@ -328,6 +336,24 @@ const Navbar: React.FC<{ isDarkMode: boolean; toggleTheme: () => void }> = ({
           </ListItem>
         </List>
       </Drawer>
+      <Dialog open={!!logoutMessage} onClose={() => setLogoutMessage(null)}>
+        <DialogTitle sx={{ fontFamily: "Poppins", fontWeight: "bold" }}>
+          Session Notice
+        </DialogTitle>
+        <DialogContent sx={{ fontFamily: "Poppins" }}>
+          {logoutMessage}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setLogoutMessage(null);
+              navigate("/login");
+            }}
+          >
+            Go to Login
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

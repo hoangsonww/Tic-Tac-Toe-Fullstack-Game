@@ -1,19 +1,11 @@
 const express = require("express");
 const LeaderboardEntry = require("../models/LeaderboardEntry");
-const User = require("../models/User");
 const Match = require("../models/Match");
 const authenticate = require("../middleware/authMiddleware");
+const { calculateElo, BASE_ELO } = require("../utils/elo");
+const { applyUserMatchResult } = require("../utils/user-stats");
 
 const router = express.Router();
-
-// ELO configuration
-const BASE_ELO = 1200; // Default starting ELO
-const K_FACTOR = {
-  easy: 16,
-  medium: 24,
-  hard: 32,
-  impossible: 40,
-};
 const TIMEOUT_DURATION = 30000; // 30 sec
 const WAITING_MATCH_TIMEOUT = 5 * 60 * 1000; // 5 minutes max to find a match
 
@@ -32,70 +24,70 @@ const WAITING_MATCH_TIMEOUT = 5 * 60 * 1000; // 5 minutes max to find a match
  *     tags: [Leaderboard]
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
  *       200:
- *         description: List of players sorted by ELO
+ *         description: List of players sorted by ELO with pagination
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   username:
- *                     type: string
- *                     description: Player's username
- *                   elo:
- *                     type: number
- *                     description: Player's ELO rating
- *                   totalWins:
- *                     type: number
- *                     description: Total number of wins
- *                   totalLosses:
- *                     type: number
- *                     description: Total number of losses
- *                   totalDraws:
- *                     type: number
- *                     description: Total number of draws
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: Total number of leaderboard entries
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       username:
+ *                         type: string
+ *                       elo:
+ *                         type: number
+ *                       totalWins:
+ *                         type: number
+ *                       totalLosses:
+ *                         type: number
+ *                       totalDraws:
+ *                         type: number
  *       500:
  *         description: Failed to fetch leaderboard
  */
 router.get("/", async (req, res) => {
   try {
-    const leaderboard = await LeaderboardEntry.find().sort({ elo: -1 });
-    res.json(leaderboard);
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit, 10) || 10, 1),
+      50,
+    );
+    const skip = (page - 1) * limit;
+
+    const [results, total] = await Promise.all([
+      LeaderboardEntry.find().sort({ elo: -1 }).skip(skip).limit(limit),
+      LeaderboardEntry.countDocuments(),
+    ]);
+
+    res.json({ results, total, page, limit });
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
     res.status(500).json({ error: "Failed to fetch leaderboard" });
   }
 });
-
-/**
- * Helper function to update user stats
- * @param username Username to update
- * @param elo New ELO
- * @param result Result of the user
- * @returns {Promise<void>} Saved stats
- */
-const updateUserStats = async (username, elo, result) => {
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    user.elo = elo;
-    user.gamesPlayed += 1;
-
-    if (result === "win") user.totalWins += 1;
-    if (result === "loss") user.totalLosses += 1;
-    if (result === "draw") user.totalDraws += 1;
-
-    await user.save();
-  } catch (error) {
-    console.error("Error updating user stats:", error);
-  }
-};
 
 /**
  * @swagger
@@ -186,7 +178,7 @@ router.post("/match", authenticate, async (req, res) => {
       { new: true },
     );
 
-    await updateUserStats(player, newElo, result);
+    await applyUserMatchResult(player, newElo, result);
 
     res
       .status(201)
@@ -274,7 +266,7 @@ router.post("/ai-match", authenticate, async (req, res) => {
       { new: true },
     );
 
-    await updateUserStats(player, newElo, result);
+    await applyUserMatchResult(player, newElo, result);
 
     res.status(201).json({
       message: "AI match result recorded successfully",
@@ -714,8 +706,8 @@ router.post("/match/finish", authenticate, async (req, res) => {
       { upsert: true, new: true },
     );
 
-    await updateUserStats(match.player, newPlayerElo, playerResult);
-    await updateUserStats(match.opponent, newOpponentElo, opponentResult);
+    await applyUserMatchResult(match.player, newPlayerElo, playerResult);
+    await applyUserMatchResult(match.opponent, newOpponentElo, opponentResult);
 
     // Update the match record
     match.status = "complete";
@@ -862,8 +854,8 @@ router.post("/match/timeout", authenticate, async (req, res) => {
       );
 
       // Update user stats if needed
-      await updateUserStats(winner, newWinnerElo, "win");
-      await updateUserStats(loser, newLoserElo, "loss");
+      await applyUserMatchResult(winner, newWinnerElo, "win");
+      await applyUserMatchResult(loser, newLoserElo, "loss");
 
       // Finalize match status in the database
       match.status = "complete";
@@ -887,67 +879,6 @@ router.post("/match/timeout", authenticate, async (req, res) => {
     res.status(500).json({ error: "Failed to check timeout" });
   }
 });
-
-/**
- * Calculate new ELO based on the result and difficulty
- * @param {number} playerElo - Current ELO of the player
- * @param {number} opponentElo - Current ELO of the opponent (can be same as player's ELO)
- * @param {string} result - Result of the match ("win", "loss", "draw")
- * @param {string} difficulty - Difficulty of the match ("easy", "medium", "hard", "impossible")
- * @returns {number} New ELO
- */
-const calculateElo = (playerElo, opponentElo, result, difficulty) => {
-  // Define ELO changes for each combination
-  const eloChanges = {
-    easy: { win: +10, draw: -5, loss: -20 },
-    medium: { win: +20, draw: -10, loss: -15 },
-    hard: { win: +30, draw: +5, loss: -10 },
-    impossible: { win: +40, draw: +10, loss: -5 },
-  };
-
-  if (difficulty !== "human") {
-    // Get the ELO change based on difficulty and result
-    const difficultyKey = difficulty.toLowerCase();
-    const resultKey = result.toLowerCase();
-
-    // Default to medium difficulty if invalid
-    const eloChangeByDifficulty =
-      eloChanges[difficultyKey] || eloChanges["medium"];
-    // Default to zero ELO change if invalid result
-    const eloChange = eloChangeByDifficulty[resultKey];
-
-    if (eloChange === undefined) {
-      // If result is invalid, default to no ELO change
-      return playerElo;
-    }
-
-    // Calculate new ELO
-    const newElo = playerElo + eloChange;
-
-    // Ensure ELO doesn't drop below 0
-    return Math.max(0, newElo);
-  } else {
-    // Human opponent logic using standard ELO formula
-    const K = 220; // ELO K-factor for human matches
-    const expectedScore =
-      1 / (1 + Math.pow(10, (opponentElo - playerElo) / 400));
-    let actualScore;
-
-    // Assign actual score based on match result
-    if (result === "win") actualScore = 1;
-    else if (result === "draw") actualScore = 0.5;
-    else if (result === "loss") actualScore = 0;
-    else throw new Error("Invalid match result");
-
-    // Calculate new ELO
-    const newElo = playerElo + K * (actualScore - expectedScore);
-
-    console.log("newElo", newElo);
-
-    // Return updated ELO, ensuring it doesn't drop below 0
-    return Math.max(0, Math.round(newElo));
-  }
-};
 
 /**
  * @swagger
@@ -1085,6 +1016,91 @@ router.post("/matchmaking/cancel", async (req, res) => {
   } catch (error) {
     console.error("Error canceling matchmaking:", error);
     res.status(500).json({ error: "Failed to cancel matchmaking." });
+  }
+});
+
+/**
+ * @swagger
+ * /leaderboard/match/history:
+ *   get:
+ *     summary: Get recent matches (with move timeline and events)
+ *     tags: [Leaderboard]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: username
+ *         schema:
+ *           type: string
+ *         description: Optional username to filter results
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Max number of matches to return (default 20)
+ *     responses:
+ *       200:
+ *         description: List of recent matches
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 matches:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Match'
+ *       500:
+ *         description: Failed to fetch match history
+ */
+router.get("/match/history", authenticate, async (req, res) => {
+  const { username, limit = 20 } = req.query;
+  const parsedLimit = Math.min(parseInt(limit, 10) || 20, 100);
+  try {
+    const query = username
+      ? { $or: [{ player: username }, { opponent: username }] }
+      : {};
+    const matches = await Match.find(query)
+      .sort({ createdAt: -1 })
+      .limit(parsedLimit);
+    res.json({ matches });
+  } catch (error) {
+    console.error("Error fetching match history", error);
+    res.status(500).json({ error: "Failed to fetch match history" });
+  }
+});
+
+router.get("/match/:id", authenticate, async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.id);
+    if (!match) return res.status(404).json({ error: "Match not found" });
+    res.json({ match });
+  } catch (error) {
+    console.error("Error fetching match", error);
+    res.status(500).json({ error: "Failed to fetch match" });
+  }
+});
+
+router.post("/match/admin/end", async (req, res) => {
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (!adminSecret || req.headers["x-admin-secret"] !== adminSecret) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+  const { matchId, winner, reason = "admin" } = req.body;
+  if (!matchId) return res.status(400).json({ error: "matchId is required" });
+
+  try {
+    const match = await Match.findById(matchId);
+    if (!match) return res.status(404).json({ error: "Match not found" });
+
+    match.status = "complete";
+    match.winner = winner || null;
+    match.endedReason = reason;
+    await match.save();
+    res.json({ match });
+  } catch (error) {
+    console.error("Error administratively ending match", error);
+    res.status(500).json({ error: "Failed to end match" });
   }
 });
 

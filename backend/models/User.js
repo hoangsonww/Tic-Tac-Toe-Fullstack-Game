@@ -99,6 +99,13 @@ const UserSchema = new mongoose.Schema({
   dob: { type: String },
   bio: { type: String },
   gamesPlayed: { type: Number, default: 0 },
+  totalWins: { type: Number, default: 0 },
+  totalLosses: { type: Number, default: 0 },
+  totalDraws: { type: Number, default: 0 },
+  streak: { type: Number, default: 0 },
+  longestStreak: { type: Number, default: 0 },
+  achievements: [{ type: String }],
+  lastPlayedAt: { type: Date },
   profilePicture: { type: String },
   socialMedia: {
     github: { type: String },

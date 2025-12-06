@@ -199,40 +199,51 @@ router.put("/games", authenticate, async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *         description: The username of the user to search for
+ *         description: The username of the user to search for (partial allowed)
+ *       - in: query
+ *         name: exact
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *         description: If true, require exact username match
  *     responses:
  *       200:
- *         description: The searched user's profile
+ *         description: Matching user profiles
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 username:
- *                   type: string
- *                 email:
- *                   type: string
- *                 dob:
- *                   type: string
- *                 bio:
- *                   type: string
- *                 profilePicture:
- *                   type: string
- *                 socialMedia:
- *                   type: object
- *                   additionalProperties:
- *                     type: string
- *                 elo:
- *                   type: number
- *                 gamesPlayed:
- *                   type: number
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       username:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                       dob:
+ *                         type: string
+ *                       bio:
+ *                         type: string
+ *                       profilePicture:
+ *                         type: string
+ *                       socialMedia:
+ *                         type: object
+ *                         additionalProperties:
+ *                           type: string
+ *                       elo:
+ *                         type: number
+ *                       gamesPlayed:
+ *                         type: number
  *       404:
  *         description: User not found
  *       500:
  *         description: Failed to search for profile
  */
 router.get("/search", authenticate, async (req, res) => {
-  const { username } = req.query;
+  const { username, exact } = req.query;
 
   if (!username) {
     return res
@@ -245,16 +256,25 @@ router.get("/search", authenticate, async (req, res) => {
     const escapedUsername = escapeRegex(username.trim());
     const regex = new RegExp(escapedUsername, "i"); // 'i' for case-insensitive search
 
-    // Use the regex in your query
-    const user = await User.findOne({ username: regex }).select(
-      "username email dob bio profilePicture socialMedia elo gamesPlayed",
-    );
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (exact === "true") {
+      const exactUser = await User.findOne({
+        username: username.trim(),
+      }).select(
+        "username email dob bio profilePicture socialMedia elo gamesPlayed",
+      );
+      if (!exactUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      return res.json({ results: [exactUser] });
     }
 
-    res.json(user);
+    const users = await User.find({ username: regex })
+      .select(
+        "username email dob bio profilePicture socialMedia elo gamesPlayed",
+      )
+      .limit(10);
+
+    res.json({ results: users || [] });
   } catch (error) {
     console.error("Error searching for profile:", error);
     res.status(500).json({ error: "Failed to search for profile" });
