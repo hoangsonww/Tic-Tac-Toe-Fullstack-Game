@@ -60,15 +60,45 @@ const mongoose = require("mongoose");
  */
 
 const matchSchema = new mongoose.Schema({
+  gameId: { type: String },
   player: { type: String, required: true },
   opponent: { type: String },
   status: {
     type: String,
-    enum: ["waiting", "active", "complete"],
+    enum: ["waiting", "active", "complete", "abandoned"],
     default: "waiting",
   },
-  moves: [{ player: String, move: { row: Number, column: Number } }],
+  moves: [
+    {
+      player: String,
+      symbol: { type: String, enum: ["X", "O"], default: "X" },
+      move: { row: Number, column: Number },
+      at: { type: Date, default: Date.now },
+    },
+  ],
   winner: { type: String },
+  endedReason: { type: String },
+  spectators: [{ type: String }],
+  events: [
+    {
+      type: { type: String },
+      player: { type: String },
+      payload: {},
+      at: { type: Date, default: Date.now },
+    },
+  ],
+  chat: [
+    {
+      sender: String,
+      message: String,
+      at: { type: Date, default: Date.now },
+    },
+  ],
+  eloChanges: {
+    playerDelta: Number,
+    opponentDelta: Number,
+  },
+  drawOfferFrom: { type: String },
   createdAt: { type: Date, default: Date.now },
   lastMoveTime: { type: Date },
 });

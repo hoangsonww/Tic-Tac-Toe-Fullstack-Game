@@ -10,6 +10,10 @@ import {
   IconButton,
   InputAdornment,
   useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   LockOutlined as LockIcon,
@@ -27,6 +31,7 @@ const Login: React.FC = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -47,7 +52,7 @@ const Login: React.FC = () => {
       navigate("/home");
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Invalid email or password. Please try again.");
+      setModalMessage("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -225,6 +230,17 @@ const Login: React.FC = () => {
           </Button>
         </Typography>
       </Box>
+      <Dialog open={!!modalMessage} onClose={() => setModalMessage(null)}>
+        <DialogTitle sx={{ fontFamily: "Poppins", fontWeight: "bold" }}>
+          Login Error
+        </DialogTitle>
+        <DialogContent sx={{ fontFamily: "Poppins" }}>
+          {modalMessage}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setModalMessage(null)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

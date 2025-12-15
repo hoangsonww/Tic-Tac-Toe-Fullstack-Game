@@ -7,6 +7,10 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { api } from "../utils/api";
@@ -21,6 +25,7 @@ const ForgotPassword: React.FC = () => {
   const [error, setError] = useState("");
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleVerifyEmail = async () => {
@@ -45,14 +50,13 @@ const ForgotPassword: React.FC = () => {
     setError("");
     try {
       await api.post("/auth/reset-password", { email, newPassword });
-      alert(
+      setModalMessage(
         "Password reset successfully. Please log in with your new password.",
       );
       setIsEmailVerified(false);
       setEmail("");
       setNewPassword("");
       setConfirmPassword("");
-      navigate("/login");
     } catch (err) {
       setError("Failed to reset password. Please try again.");
     } finally {
@@ -242,6 +246,24 @@ const ForgotPassword: React.FC = () => {
           </Typography>
         )}
       </Box>
+      <Dialog open={!!modalMessage} onClose={() => setModalMessage(null)}>
+        <DialogTitle sx={{ fontFamily: "Poppins", fontWeight: "bold" }}>
+          Notice
+        </DialogTitle>
+        <DialogContent sx={{ fontFamily: "Poppins" }}>
+          {modalMessage}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setModalMessage(null);
+              navigate("/login");
+            }}
+          >
+            Go to Login
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

@@ -15,12 +15,8 @@ const swaggerOptions = {
       termsOfService: "https://tictactoe-ai-app.vercel.app",
     },
     servers: [
-      {
-        url: "https://tic-tac-toe-fullstack-game.onrender.com", // Production Server URL
-      },
-      {
-        url: "http://localhost:4000", // Development Server URL
-      },
+      { url: "https://tic-tac-toe-backend-api.vercel.app" },
+      { url: "http://localhost:4000" },
     ],
     components: {
       securitySchemes: {
@@ -31,11 +27,7 @@ const swaggerOptions = {
         },
       },
     },
-    security: [
-      {
-        BearerAuth: [],
-      },
-    ],
+    security: [{ BearerAuth: [] }],
   },
   apis: ["./routes/*.js", "./models/*.js"],
 };

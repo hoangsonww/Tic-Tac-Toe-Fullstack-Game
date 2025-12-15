@@ -1,0 +1,15 @@
+{
+  "name": "Backend Dev Container",
+  "context": "../backend",
+  "dockerFile": "Dockerfile",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopContainer",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/sh"
+  },
+  "extensions": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-vscode.vscode-typescript-next"
+  ]
+}

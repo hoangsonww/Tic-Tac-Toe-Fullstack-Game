@@ -1,6 +1,12 @@
 import axios from "axios";
 
-const API_URL = "https://tic-tac-toe-fullstack-game.onrender.com";
+const API_URL =
+  process.env.REACT_APP_API_BASE ||
+  (typeof import.meta !== "undefined"
+    ? // @ts-ignore - Vite injects import.meta.env
+      import.meta.env?.VITE_API_BASE
+    : undefined) ||
+  "https://tic-tac-toe-backend-api.vercel.app";
 
 export const api = axios.create({
   baseURL: API_URL,
